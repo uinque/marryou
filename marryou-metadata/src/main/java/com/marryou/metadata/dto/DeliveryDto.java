@@ -2,6 +2,7 @@ package com.marryou.metadata.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,6 +53,14 @@ public class DeliveryDto implements Serializable {
      */
     private String productName;
     /**
+     * 仓库ID
+     */
+    private Long entrepotId;
+    /**
+     * 仓库名称
+     */
+    private Long entrepotName;
+    /**
      * 皮重
      */
     private BigDecimal tareWeight;
@@ -75,6 +84,10 @@ public class DeliveryDto implements Serializable {
      * 运输车牌
      */
     private String carNo;
+    /**
+     * 装车时间
+     */
+    private Date loadingTime;
     /**
      * 批次号
      */
@@ -326,6 +339,30 @@ public class DeliveryDto implements Serializable {
         this.title = title;
     }
 
+    public Long getEntrepotId() {
+        return entrepotId;
+    }
+
+    public void setEntrepotId(Long entrepotId) {
+        this.entrepotId = entrepotId;
+    }
+
+    public Long getEntrepotName() {
+        return entrepotName;
+    }
+
+    public void setEntrepotName(Long entrepotName) {
+        this.entrepotName = entrepotName;
+    }
+
+    public Date getLoadingTime() {
+        return loadingTime;
+    }
+
+    public void setLoadingTime(Date loadingTime) {
+        this.loadingTime = loadingTime;
+    }
+
     @Override
     public String toString() {
         return "DeliveryDto{" +
@@ -339,12 +376,15 @@ public class DeliveryDto implements Serializable {
                 ", customer='" + customer + '\'' +
                 ", productId=" + productId +
                 ", productName='" + productName + '\'' +
+                ", entrepotId=" + entrepotId +
+                ", entrepotName=" + entrepotName +
                 ", tareWeight=" + tareWeight +
                 ", grossWeight=" + grossWeight +
                 ", netWeight=" + netWeight +
                 ", checker='" + checker + '\'' +
                 ", auditor='" + auditor + '\'' +
                 ", carNo='" + carNo + '\'' +
+                ", loadingTime=" + loadingTime +
                 ", batchNo='" + batchNo + '\'' +
                 ", level=" + level +
                 ", techno=" + techno +

@@ -1,14 +1,6 @@
 package com.marryou.controller.delivery;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -16,6 +8,9 @@ import com.marryou.commons.utils.base.BUtils;
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.commons.utils.json.GsonUtils;
 import com.marryou.commons.utils.time.DateUtils;
+import com.marryou.dto.request.BasePageRequest;
+import com.marryou.dto.response.BaseResponse;
+import com.marryou.dto.response.PageResponse;
 import com.marryou.metadata.dto.DeliveryCountDto;
 import com.marryou.metadata.dto.DeliveryDto;
 import com.marryou.metadata.dto.DeliveryInfoDto;
@@ -26,19 +21,23 @@ import com.marryou.metadata.entity.DeliveryStandardEntity;
 import com.marryou.metadata.entity.ManufacturerEntity;
 import com.marryou.metadata.entity.ProductEntity;
 import com.marryou.metadata.entity.StandardEntity;
+import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.enums.LevelEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
+import com.marryou.metadata.enums.RoleEnum;
+import com.marryou.metadata.enums.StatusEnum;
 import com.marryou.metadata.enums.TechnoEnum;
-import com.marryou.metadata.persistence.SearchFilters;
-import com.marryou.metadata.persistence.Searcher;
 import com.marryou.metadata.service.CompanyService;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.ManufacturerService;
 import com.marryou.metadata.service.ProductService;
-import com.marryou.metadata.service.RedisService;
 import com.marryou.metadata.service.StandardService;
+import com.marryou.metadata.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,26 +47,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.base.Preconditions;
-import com.marryou.dto.request.BasePageRequest;
-import com.marryou.dto.response.BaseResponse;
-import com.marryou.dto.response.PageResponse;
-import com.marryou.metadata.entity.UserEntity;
-import com.marryou.metadata.enums.RoleEnum;
-import com.marryou.metadata.enums.StatusEnum;
-import com.marryou.metadata.service.UserService;
-
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Administrator
@@ -115,6 +107,8 @@ public class DeliveryController {
 			Preconditions.checkNotNull(delivery.getNetWeight(), "净重为null");
 			Preconditions.checkNotNull(delivery.getTareWeight(), "皮重为null");
 			Preconditions.checkNotNull(delivery.getProductId(), "产品id为null");
+			Preconditions.checkNotNull(delivery.getEntrepotId(), "仓库id为null");
+			Preconditions.checkNotNull(delivery.getLoadingTime(), "装车时间为null");
 			Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
 			ProductEntity product = productService.findOne(delivery.getProductId());
 			Preconditions.checkNotNull(product, "查无对应产品数据");

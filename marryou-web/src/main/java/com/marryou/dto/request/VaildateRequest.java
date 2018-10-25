@@ -13,6 +13,8 @@ public class VaildateRequest implements Serializable{
 
     private String companyName;
 
+    private String entrepotName;
+
     private Long deliveryId;
 
 
@@ -32,12 +34,20 @@ public class VaildateRequest implements Serializable{
         this.companyName = companyName;
     }
 
+    public String getEntrepotName() {
+        return entrepotName;
+    }
+
+    public void setEntrepotName(String entrepotName) {
+        this.entrepotName = entrepotName;
+    }
 
     @Override
     public String toString() {
         return "VaildateRequest{" +
                 "loginName='" + loginName + '\'' +
                 ", companyName='" + companyName + '\'' +
+                ", entrepotName='" + entrepotName + '\'' +
                 '}';
     }
 }

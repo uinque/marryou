@@ -47,6 +47,14 @@ public class DeliveryInfoDto{
      */
     private String productName;
     /**
+     * 仓库ID
+     */
+    private Long entrepotId;
+    /**
+     * 仓库名称
+     */
+    private Long entrepotName;
+    /**
      * 皮重
      */
     private BigDecimal tareWeight;
@@ -70,6 +78,10 @@ public class DeliveryInfoDto{
      * 运输车牌
      */
     private String carNo;
+    /**
+     * 装车时间
+     */
+    private Date loadingTime;
     /**
      * 批次号
      */

@@ -1,5 +1,15 @@
 package com.marryou.metadata.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.marryou.commons.utils.json.JsonDateSerializer;
+import com.marryou.metadata.entity.base.BaseEntity;
+import com.marryou.metadata.enums.LevelEnum;
+import com.marryou.metadata.enums.StatusEnum;
+import com.marryou.metadata.enums.TechnoEnum;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,18 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.marryou.commons.utils.json.JsonDateSerializer;
-import com.marryou.metadata.enums.LevelEnum;
-import com.marryou.metadata.enums.TechnoEnum;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import com.marryou.metadata.entity.base.BaseEntity;
-import com.marryou.metadata.enums.StatusEnum;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +70,14 @@ public class DeliveryOrderEntity extends BaseEntity {
      */
     private String productName;
     /**
+     * 仓库ID
+     */
+    private Long entrepotId;
+    /**
+     * 仓库名称
+     */
+    private Long entrepotName;
+    /**
      * 皮重
      */
     private BigDecimal tareWeight;
@@ -95,6 +101,10 @@ public class DeliveryOrderEntity extends BaseEntity {
      * 运输车牌
      */
     private String carNo;
+    /**
+     * 装车时间
+     */
+    private Date loadingTime;
     /**
      * 批次号
      */
@@ -215,6 +225,24 @@ public class DeliveryOrderEntity extends BaseEntity {
         this.productName = productName;
     }
 
+    @Column(name = "entrepot_id")
+    public Long getEntrepotId() {
+        return entrepotId;
+    }
+
+    public void setEntrepotId(Long entrepotId) {
+        this.entrepotId = entrepotId;
+    }
+
+    @Column(name = "entrepot_name")
+    public Long getEntrepotName() {
+        return entrepotName;
+    }
+
+    public void setEntrepotName(Long entrepotName) {
+        this.entrepotName = entrepotName;
+    }
+
     @Column(name = "tare_weight")
     public BigDecimal getTareWeight() {
         return tareWeight;
@@ -267,6 +295,15 @@ public class DeliveryOrderEntity extends BaseEntity {
 
     public void setCarNo(String carNo) {
         this.carNo = carNo;
+    }
+
+    @Column(name = "loading_time")
+    public Date getLoadingTime() {
+        return loadingTime;
+    }
+
+    public void setLoadingTime(Date loadingTime) {
+        this.loadingTime = loadingTime;
     }
 
     @Column(name = "batch_no")
@@ -354,12 +391,15 @@ public class DeliveryOrderEntity extends BaseEntity {
                 ", customer='" + customer + '\'' +
                 ", productId=" + productId +
                 ", productName='" + productName + '\'' +
+                ", entrepotId=" + entrepotId +
+                ", entrepotName=" + entrepotName +
                 ", tareWeight=" + tareWeight +
                 ", grossWeight=" + grossWeight +
                 ", netWeight=" + netWeight +
                 ", checker='" + checker + '\'' +
                 ", auditor='" + auditor + '\'' +
                 ", carNo='" + carNo + '\'' +
+                ", loadingTime=" + loadingTime +
                 ", batchNo='" + batchNo + '\'' +
                 ", level=" + level +
                 ", techno=" + techno +
@@ -368,6 +408,6 @@ public class DeliveryOrderEntity extends BaseEntity {
                 ", remark='" + remark + '\'' +
                 ", status=" + status +
                 ", standards=" + standards +
-                "} " + super.toString();
+                '}';
     }
 }
