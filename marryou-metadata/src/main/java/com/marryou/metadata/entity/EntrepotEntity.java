@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "entrepot")
-public class EntrepotEntity extends BaseEntity {
+public class EntrepotEntity extends BaseEntity  {
 
     private static final long serialVersionUID = 6475950047481509331L;
 
