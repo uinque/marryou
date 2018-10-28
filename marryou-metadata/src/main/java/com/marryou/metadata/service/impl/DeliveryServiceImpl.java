@@ -83,6 +83,7 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 				Path<LevelEnum> level = root.get("level");
 				Path<Long> productId = root.get("productId");
 				Path<StatusEnum> status = root.get("status");
+				Path<Date> outTime = root.get("outTime");
 				Path<Date> createTime = root.get("createTime");
 				Path<String> tenantCode = root.get("tenantCode");
 				if (null != search) {
@@ -129,9 +130,13 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 						where.add(cb.and(cb.equal(tenantCode, search.getTenantCode())));
 					}
 					if (StringUtils.isNotBlank(search.getStartTime()) && StringUtils.isNotBlank(search.getEndTime())) {
-						where.add(cb.and(cb.between(createTime, DateUtils.convertToDateTime(search.getStartTime()),
+						where.add(cb.and(cb.between(outTime, DateUtils.convertToDateTime(search.getStartTime()),
 								DateUtils.convertToDateTime(search.getEndTime()))));
 					}
+					/*if (StringUtils.isNotBlank(search.getStartTime()) && StringUtils.isNotBlank(search.getEndTime())) {
+						where.add(cb.and(cb.between(createTime, DateUtils.convertToDateTime(search.getStartTime()),
+								DateUtils.convertToDateTime(search.getEndTime()))));
+					}*/
 				}
 				query.where(where.toArray(new Predicate[] {}));
 				return null;
@@ -162,6 +167,7 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 					Path<LevelEnum> level = root.get("level");
 					Path<Long> productId = root.get("productId");
 					Path<StatusEnum> status = root.get("status");
+					Path<Date> outTime = root.get("outTime");
 					Path<Date> createTime = root.get("createTime");
 					Path<String> tenantCode = root.get("tenantCode");
 					if (null != search) {
@@ -209,9 +215,17 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 						}
 						if (StringUtils.isNotBlank(search.getStartTime())
 								&& StringUtils.isNotBlank(search.getEndTime())) {
+							where.add(cb.and(cb.between(outTime, DateUtils.convertToDateTime(search.getStartTime()),
+									DateUtils.convertToDateTime(search.getEndTime()))));
+						} else {
+							Date when = DateUtils.getCurrentDateTime();
+							where.add(cb.and(
+									cb.between(outTime, DateUtils.getMonthStart(when), DateUtils.getMonthEnd(when))));
+						}
+						/*if (StringUtils.isNotBlank(search.getStartTime()) && StringUtils.isNotBlank(search.getEndTime())) {
 							where.add(cb.and(cb.between(createTime, DateUtils.convertToDateTime(search.getStartTime()),
 									DateUtils.convertToDateTime(search.getEndTime()))));
-						}
+						}*/
 					}
 					query.where(where.toArray(new Predicate[] {}));
 					return null;

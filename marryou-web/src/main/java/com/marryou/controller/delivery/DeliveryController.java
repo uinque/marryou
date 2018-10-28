@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.marryou.commons.utils.RandomUtils;
 import com.marryou.commons.utils.base.BUtils;
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.commons.utils.json.GsonUtils;
@@ -108,7 +109,8 @@ public class DeliveryController {
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getAuditor()), "审核员为null");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getDistributorName()), "客户名称为null");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getSupplierName()), "生厂商名称为null");
-			Preconditions.checkNotNull(delivery.getDeliveryTime(), "出厂日期为null");
+			Preconditions.checkNotNull(delivery.getDeliveryTime(), "生产日期为null");
+			Preconditions.checkNotNull(delivery.getOutTime(), "出厂日期为null");
 			Preconditions.checkNotNull(delivery.getDistributorId(), "客户null");
 			Preconditions.checkNotNull(delivery.getSupplierId(), "生厂商为null");
 			Preconditions.checkNotNull(delivery.getProductId(), "产品为null");
@@ -121,8 +123,9 @@ public class DeliveryController {
 			Preconditions.checkNotNull(product, "查无对应产品数据");
 			DeliveryOrderEntity d = new DeliveryOrderEntity();
 			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "level", "status", "standards");
-			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyyyMMddHHmmss"));
+			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.randomInt(100));
 			d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
+			d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
 			d.setLevel(LevelEnum.getEnum(delivery.getLevel()));
 			d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
 			d.setRemark(product.getRemark());
@@ -368,6 +371,9 @@ public class DeliveryController {
 			d.setSupplierName(mft.getName());
 			if (StringUtils.isNotBlank(delivery.getDeliveryTime())) {
 				d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
+			}
+			if (StringUtils.isNotBlank(delivery.getOutTime())) {
+				d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
 			}
 			if (null != delivery.getLevel()) {
 				d.setLevel(LevelEnum.getEnum(delivery.getLevel()));

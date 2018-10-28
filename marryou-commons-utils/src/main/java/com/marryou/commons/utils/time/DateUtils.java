@@ -1,5 +1,6 @@
 package com.marryou.commons.utils.time;
 
+import com.marryou.commons.utils.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DateFormat;
@@ -126,6 +127,14 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return getMonthEnd(year, month);
     }
 
+    public static Date getMonthStart(Date when) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(when);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        return getMonthEnd(year, month);
+    }
+
     /**
      * 获取给定日的最后一刻。.
      *
@@ -202,5 +211,14 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             return DATE_TIME_FORMAT.format(date);
         }
         return FormatConstants.DATE_TIME_FORMAT.format(date);
+    }
+
+    public static void main(String[] args) {
+        Date when = DateUtils.getCurrentDateTime();
+        Date start = DateUtils.getMonthStart(when);
+        Date end = DateUtils.getMonthEnd(when);
+        System.out.println("start:"+DateUtils.formatDate(start,"yyyMMddHHmmss"));
+        System.out.println("end:"+DateUtils.formatDate(end,"yyyMMddHHmmss"));
+        System.out.println("No:"+DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.randomInt(100));
     }
 }
