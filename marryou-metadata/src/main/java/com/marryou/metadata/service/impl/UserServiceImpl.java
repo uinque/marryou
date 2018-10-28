@@ -67,6 +67,7 @@ public class UserServiceImpl extends AbsBaseService<UserEntity, UserDao> impleme
 				Path<StatusEnum> status = root.get("status");
 				Path<RoleEnum> role = root.get("role");
 				Path<Long> companyId = root.get("companyId");
+				Path<String> tenantCode = root.get("tenantCode");
 				Path<Date> createTime = root.get("createTime");
 				if (null != search) {
 					if (null != search.getId()) {
@@ -87,6 +88,9 @@ public class UserServiceImpl extends AbsBaseService<UserEntity, UserDao> impleme
 					if (null != search.getCompanyId()) {
 						where.add(cb.and(cb.equal(companyId, search.getCompanyId())));
 					}
+					if(StringUtils.isNotBlank(search.getTenantCode())){
+						where.add(cb.and(cb.equal(tenantCode, search.getTenantCode())));
+					}
 					if (StringUtils.isNotBlank(search.getStartTime()) && StringUtils.isNotBlank(search.getEndTime())) {
 						where.add(cb.and(cb.between(createTime, DateUtils.convertToDateTime(search.getStartTime()),
 								DateUtils.convertToDateTime(search.getEndTime()))));
@@ -104,7 +108,8 @@ public class UserServiceImpl extends AbsBaseService<UserEntity, UserDao> impleme
 	public void saveUser(UserEntity user, String logContent, OperateTypeEnum type, String operate) {
 		this.save(user);
 		operateLogService
-				.save(new OperateLogEntity(logContent, type, user.getId(), LogTypeEnum.USER, operate, new Date()));
+				.save(new OperateLogEntity(logContent, type, user.getId(), LogTypeEnum.USER,
+						operate, new Date(), user.getTenantCode()));
 	}
 
 }

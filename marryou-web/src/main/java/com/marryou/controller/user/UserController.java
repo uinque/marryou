@@ -21,6 +21,7 @@ import com.marryou.metadata.service.CompanyService;
 import com.marryou.metadata.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -111,6 +112,7 @@ public class UserController {
 			}
 			u.setStatus(StatusEnum.getEnum(user.getStatus()));
 			u.setRole(RoleEnum.getEnum(user.getRole()));
+			u.setTenantCode(operator.getTenantCode());
 			u.setCreateBy(loginName);
 			u.setCreateTime(new Date());
 			userService.saveUser(u, GsonUtils.buildGson().toJson(u), OperateTypeEnum.CREATE, loginName);
@@ -136,6 +138,9 @@ public class UserController {
 			Preconditions.checkNotNull(status, "status为null");
 			UserEntity user = userService.findOne(id);
 			Preconditions.checkNotNull(user, "查无该用户");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),user.getTenantCode()),"非本租户下的用户无权操作");
+			}
 			if (!operator.getRole().equals(RoleEnum.SUPER_ADMIN)) {
 				Preconditions.checkState(operator.getRole().getValue() < user.getRole().getValue(), "无权限禁用该用户");
 			}
@@ -199,9 +204,13 @@ public class UserController {
 			String loginName = JwtUtils.parseJWT(token).getSubject();
 			UserEntity operator = userService.getUserByLoginName(loginName);
 			Preconditions.checkNotNull(operator, "操作用户异常");
-			if (operator.getRole().equals(RoleEnum.MEMBER)) {
-				search.getParams().setCompanyId(operator.getCompanyId());
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				if(null==search.getParams()){
+					search.setParams(new UserSearchDto());
+				}
+				search.getParams().setTenantCode(operator.getTenantCode());
 			}
+			Preconditions.checkState(operator.getRole().equals(RoleEnum.SUPER_ADMIN), "无权限查看用户信息");
 			Page<UserEntity> page = userService.findUsers(search.toPageRequest(), search.getParams());
 			List<UserDto> users = Lists.newArrayList();
 			if (Collections3.isNotEmpty(page.getContent())) {
@@ -238,6 +247,9 @@ public class UserController {
 			Preconditions.checkNotNull(user.getId(), "userId为null");
 			UserEntity u = userService.findOne(user.getId());
 			Preconditions.checkNotNull(u, "查无对应user数据");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),user.getTenantCode()),"非本租户下的用户无权操作");
+			}
 			if (!operator.getRole().equals(RoleEnum.SUPER_ADMIN)) {
 				Preconditions.checkState(u.getRole().getValue() > operator.getRole().getValue(), "无权限跟新该角色用户");
 			}

@@ -19,5 +19,5 @@ public interface CompanyService extends BaseService<CompanyEntity, CompanyDao> {
 
 	void deleteCompany(CompanyEntity company, String logContent, OperateTypeEnum type, String operate);
 
-	CompanyEntity findCompanyByCompanyName(String companyName);
+	CompanyEntity findCompanyByCompanyName(String companyName,String tenantCode);
 }

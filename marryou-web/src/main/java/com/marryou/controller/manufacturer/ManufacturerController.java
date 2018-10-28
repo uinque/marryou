@@ -16,9 +16,12 @@ import com.marryou.metadata.entity.ManufacturerEntity;
 import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
+import com.marryou.metadata.persistence.SearchFilters;
+import com.marryou.metadata.persistence.Searcher;
 import com.marryou.metadata.service.ManufacturerService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +74,7 @@ public class ManufacturerController {
 			ManufacturerEntity m = new ManufacturerEntity();
 			BUtils.copyPropertiesIgnoreNull(mft, m);
 			m.setStatus(StatusEnum.getEnum(mft.getStatus()));
+			m.setTenantCode(operator.getTenantCode());
 			m.setCreateBy(loginName);
 			m.setCreateTime(new Date());
 			manufacturerService.saveMft(m, GsonUtils.buildGson().toJson(m), OperateTypeEnum.CREATE, loginName);
@@ -102,9 +106,19 @@ public class ManufacturerController {
 	@ApiOperation(value = "生厂商列表", notes = "获取生厂商列表数据")
 	@ApiImplicitParam(name = "search", value = "查询生厂商信息", required = false, dataType = "Object")
 	@PostMapping("/list")
-	public @ResponseBody BaseResponse<List<MftDto>> list() {
+	public @ResponseBody BaseResponse<List<MftDto>> list(HttpServletRequest request) {
 		try {
-			List<ManufacturerEntity> mfts = (List<ManufacturerEntity>) manufacturerService.findAll();
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
+			List<ManufacturerEntity> mfts = Lists.newArrayList();
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				SearchFilters searchFilters = new SearchFilters();
+				searchFilters.add(Searcher.eq("tenantCode", operator.getTenantCode()));
+				mfts = (List<ManufacturerEntity>) manufacturerService.findAll(searchFilters);
+			}else{
+				mfts = (List<ManufacturerEntity>) manufacturerService.findAll();
+			}
 			List<MftDto> list = Lists.newArrayList();
 			if (Collections3.isNotEmpty(mfts)) {
 				list = mfts.stream().map(m -> {
@@ -134,6 +148,9 @@ public class ManufacturerController {
 			Preconditions.checkNotNull(mft.getId(), "生厂商ID为null");
 			ManufacturerEntity m = manufacturerService.findOne(mft.getId());
 			Preconditions.checkNotNull(m, "查生厂商数据");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),m.getTenantCode()),"非本租户下的生产商，无权操作");
+			}
 			BUtils.copyPropertiesIgnoreNull(mft, m);
 			m.setStatus(StatusEnum.getEnum(mft.getStatus()));
 			m.setModifyBy(loginName);
@@ -158,6 +175,9 @@ public class ManufacturerController {
 			Preconditions.checkNotNull(id, "id参数异常");
 			ManufacturerEntity mft = manufacturerService.findOne(id);
 			Preconditions.checkNotNull(mft,"查无对应生产商信息");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),mft.getTenantCode()),"非本租户下的生产商，无权操作");
+			}
 			manufacturerService.deleteMft(mft, "删除生厂商:" + mft.getName(), OperateTypeEnum.DELETE, loginName);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success");
 		} catch (Exception e) {

@@ -37,6 +37,8 @@ public class UserDto implements Serializable {
 
     private String companyName;
 
+    private String tenantCode;
+
     private String createBy;
 
     private Date createTime;
@@ -150,6 +152,14 @@ public class UserDto implements Serializable {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
     }
 
     public String getCreateBy() {

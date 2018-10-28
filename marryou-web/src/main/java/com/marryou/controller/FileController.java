@@ -18,6 +18,7 @@ import com.marryou.metadata.service.OperateLogService;
 import com.marryou.metadata.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,25 +62,29 @@ public class FileController {
 	@ApiOperation(value = "出库单导出", notes = "按时间导出出库单数据")
 	@GetMapping("/delivery/export")
 	public @ResponseBody BaseResponse exportDelivery(HttpServletRequest request, HttpServletResponse response,
-													 @RequestParam(value = "startTime",required = false) String startTime,
-													 @RequestParam(value = "endTime",required = false) String endTime) {
+			@RequestParam(value = "startTime", required = false) String startTime,
+			@RequestParam(value = "endTime", required = false) String endTime) {
 		BasePageRequest<DeliveryDto> search = new BasePageRequest<>();
 		DeliveryDto params = new DeliveryDto();
 		search.setParams(params);
 		try {
-			/*String token = request.getHeader(Constants.TOKEN_FIELD);
+			String token = request.getHeader(Constants.TOKEN_FIELD);
 			String loginName = JwtUtils.parseJWT(token).getSubject();
 			UserEntity operator = userService.getUserByLoginName(loginName);
-			if (operator.getRole().equals(RoleEnum.MEMBER)) {
-				search.getParams().setDistributorId(operator.getCompanyId());
+			Preconditions.checkNotNull(operator, "操作用户异常");
+			if (!RoleUtils.isPlatformAdmin(operator.getTenantCode())) {
+				if (operator.getRole().equals(RoleEnum.MEMBER)) {
+					search.getParams().setDistributorId(operator.getCompanyId());
+				}
+				search.getParams().setTenantCode(operator.getTenantCode());
 			}
-			Preconditions.checkNotNull(operator, "操作用户异常");*/
 			Preconditions.checkNotNull(search, "查询参数异常");
 			search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
-			if(StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
+			if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
 				search.getParams().setStartTime(startTime);
 				search.getParams().setEndTime(endTime);
 			}
+			//TODO 不需要分页查询改造
 			search.setPageIndex(0);
 			search.setPageSize(100000);
 			Page<DeliveryOrderEntity> page = deliveryService.findDeliveryOrders(search.toPageRequest(),
@@ -91,7 +96,7 @@ public class FileController {
 				return dto;
 			}).collect(Collectors.toList());
 			operateLogService.save(new OperateLogEntity("导出出库单数据文件", OperateTypeEnum.OTHER, null, LogTypeEnum.DELIVERY,
-					"system", new Date()));
+					"system", new Date(), operator.getTenantCode()));
 			//导出操作
 			FileUtil.exportExcel(list, null, null, DeliveryExportDto.class, "出库数据.xls", response);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success");

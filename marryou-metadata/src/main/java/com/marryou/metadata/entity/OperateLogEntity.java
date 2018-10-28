@@ -35,13 +35,15 @@ public class OperateLogEntity extends BaseEntity {
 	}
 
 	public OperateLogEntity(String content, OperateTypeEnum operateType,
-							Long relationId, LogTypeEnum type, String createBy, Date createTime) {
+							Long relationId, LogTypeEnum type, String createBy,
+							Date createTime, String tenantCode) {
 		this.content = content;
 		this.operateType = operateType;
 		this.relationId = relationId;
 		this.type = type;
 		super.setCreateBy(createBy);
 		super.setCreateTime(createTime);
+		super.setTenantCode(tenantCode);
 	}
 
 	@Column(name = "content")

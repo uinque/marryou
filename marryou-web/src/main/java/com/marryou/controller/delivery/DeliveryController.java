@@ -39,6 +39,7 @@ import com.marryou.metadata.service.RedisService;
 import com.marryou.metadata.service.StandardService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,7 @@ public class DeliveryController {
 			d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
 			d.setRemark(product.getRemark());
 			d.setStatus(StatusEnum.EFFECTIVE);
+			d.setTenantCode(operator.getTenantCode());
 			d.setCreateBy(loginName);
 			d.setCreateTime(new Date());
 			List<DeliveryStandardEntity> list = delivery.getStandards().stream().map(s -> {
@@ -140,6 +142,7 @@ public class DeliveryController {
 				}
 				DeliveryStandardEntity ds = new DeliveryStandardEntity(d, s.getStandardId(), s.getStandardName(),
 						value);
+				ds.setTenantCode(operator.getTenantCode());
 				ds.setCreateBy(loginName);
 				ds.setCreateTime(new Date());
 				ds.setDeliveryOrder(d);
@@ -170,6 +173,9 @@ public class DeliveryController {
 			DeliveryOrderEntity delivery = deliveryService.findOne(id);
 			Preconditions.checkNotNull(delivery, "查无该出库单数据");
 			Preconditions.checkState(operator.getRole().getValue() < RoleEnum.MEMBER.getValue(), "无权限失效/恢复该单据");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),delivery.getTenantCode()),"非本租户下的出库单，无权操作");
+			}
 			delivery.setStatus(StatusEnum.getEnum(status));
 			delivery.setModifyBy(loginName);
 			delivery.setModifyTime(new Date());
@@ -229,11 +235,17 @@ public class DeliveryController {
 
 	@ApiOperation(value = "车牌号", notes = "获取近期50个车牌号")
 	@PostMapping("/cars")
-	public @ResponseBody BaseResponse getCarsNo() {
+	public @ResponseBody BaseResponse getCarsNo(HttpServletRequest request) {
 		try {
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
 			PageRequest pageRequest = new PageRequest(0, 50, new Sort(Sort.Direction.DESC, "deliveryTime"));
 			DeliveryDto search = new DeliveryDto();
 			search.setStatus(StatusEnum.EFFECTIVE.getValue());
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				search.setTenantCode(operator.getTenantCode());
+			}
 			Page<DeliveryOrderEntity> page = deliveryService.findDeliveryOrders(pageRequest, search);
 			Set<String> set = Sets.newHashSet();
 			if (null != page && Collections3.isNotEmpty(page.getContent())) {
@@ -260,12 +272,15 @@ public class DeliveryController {
 			UserEntity operator = userService.getUserByLoginName(loginName);
 			Preconditions.checkNotNull(operator, "操作用户异常");
 			logger.info("###统计出库单数据,请求参数：{},###", GsonUtils.buildGson().toJson(search));
-			if (operator.getRole().equals(RoleEnum.MEMBER)) {
-				if (null == search.getParams()) {
-					search.setParams(new DeliveryDto());
+			if (null == search.getParams()) {
+				search.setParams(new DeliveryDto());
+			}
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				if (operator.getRole().equals(RoleEnum.MEMBER)) {
+					search.getParams().setDistributorId(operator.getCompanyId());
+					search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
 				}
-				search.getParams().setDistributorId(operator.getCompanyId());
-				search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
+				search.getParams().setTenantCode(operator.getTenantCode());
 			}
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success",
 					deliveryService.statisticsDelivery(search.getParams()));
@@ -286,12 +301,15 @@ public class DeliveryController {
 			String loginName = JwtUtils.parseJWT(token).getSubject();
 			UserEntity operator = userService.getUserByLoginName(loginName);
 			Preconditions.checkNotNull(operator, "操作用户异常");
-			if (operator.getRole().equals(RoleEnum.MEMBER)) {
-				if (null == search.getParams()) {
-					search.setParams(new DeliveryDto());
+			if (null == search.getParams()) {
+				search.setParams(new DeliveryDto());
+			}
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				if (operator.getRole().equals(RoleEnum.MEMBER)) {
+					search.getParams().setDistributorId(operator.getCompanyId());
+					search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
 				}
-				search.getParams().setDistributorId(operator.getCompanyId());
-				search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
+				search.getParams().setTenantCode(operator.getTenantCode());
 			}
 			Page<DeliveryOrderEntity> page = deliveryService.findDeliveryOrders(search.toPageRequest(),
 					search.getParams());
@@ -340,6 +358,9 @@ public class DeliveryController {
 			Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
 			DeliveryOrderEntity d = deliveryService.findOne(delivery.getId());
 			Preconditions.checkNotNull(d, "查无对应出库单单据");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),d.getTenantCode()),"非本租户下的出库单，无权操作");
+			}
 			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "level", "status", "qrcodeUrl",
 					"standards");
 			d.setDistributorName(company.getName());

@@ -19,7 +19,7 @@ public class QrCodeTests {
 
 	private static final Logger logger = LoggerFactory.getLogger(QrCodeTests.class);
 
-	private String msg = "https://liuyueyi.github.io/hexblog/2018/03/23/mysql之锁与事务详解/";
+	private String msg = "http://www.yicaijituan.cn/scanResult/1696";
 
 	@Test
 	public void testGenWxQrcode() {
@@ -43,7 +43,7 @@ public class QrCodeTests {
 					.setLogoStyle(QrCodeOptions.LogoStyle.ROUND)
 					//.setLogoBgColor(0xff00ff00)
 					//.setLogoBorder(true)
-					.asFile("src/main/resources/static/images/qrcode0.png");
+					.asFile("src/main/resources/static/images/1696.jpg");
 			System.out.println(ans);
 		} catch (Exception e) {
 			System.out.println("create qrcode error! e: " + e);

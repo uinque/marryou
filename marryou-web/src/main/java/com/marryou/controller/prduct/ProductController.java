@@ -23,6 +23,7 @@ import com.marryou.metadata.service.ProductService;
 import com.marryou.metadata.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -76,12 +77,14 @@ public class ProductController {
 			BUtils.copyPropertiesIgnoreNull(product, p);
 			p.setStatus(StatusEnum.getEnum(product.getStatus()));
 			p.setType(ProductTypeEnum.getEnum(product.getType()));
+			p.setTenantCode(operator.getTenantCode());
 			p.setCreateBy(loginName);
 			p.setCreateTime(new Date());
 			if (Collections3.isNotEmpty(product.getStandards())) {
 				List<StandardEntity> standards = product.getStandards().stream().map(s -> {
 					StandardEntity standard = new StandardEntity(s.getName(), s.getOneLevel(), s.getTwoLevel(),
 							s.getThreeLevel(), s.getPointNum(),s.getType());
+					standard.setTenantCode(operator.getTenantCode());
 					standard.setCreateBy(p.getCreateBy());
 					standard.setCreateTime(p.getCreateTime());
 					standard.setProduct(p);
@@ -109,6 +112,9 @@ public class ProductController {
 			Preconditions.checkNotNull(product, "productDto为null");
 			Preconditions.checkNotNull(product.getId(), "productId为null");
 			ProductEntity p = productService.findOne(product.getId());
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),p.getTenantCode()),"非本租户下的产品，无权操作");
+			}
 			BUtils.copyPropertiesIgnoreNull(product, p, "standards");
 			if(StringUtils.isBlank(product.getRemark())){
 				p.setRemark(null);
@@ -180,6 +186,9 @@ public class ProductController {
 			Preconditions.checkNotNull(status, "status为null");
 			ProductEntity product = productService.findOne(id);
 			Preconditions.checkNotNull(product, "查无该产品");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),product.getTenantCode()),"非本租户下的产品，无权操作");
+			}
 			product.setStatus(StatusEnum.getEnum(status));
 			product.setModifyBy(loginName);
 			product.setModifyTime(new Date());
@@ -220,9 +229,19 @@ public class ProductController {
 
 	@ApiOperation(value = "产品列表", notes = "获取产品列表数据")
 	@PostMapping("/list")
-	public @ResponseBody BaseResponse<List<ProductDto>> list() {
+	public @ResponseBody BaseResponse<List<ProductDto>> list(HttpServletRequest request) {
 		try {
-			List<ProductEntity> products = (List<ProductEntity>) productService.findAll();
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
+			List<ProductEntity> products = Lists.newArrayList();
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				SearchFilters searchFilters = new SearchFilters();
+				searchFilters.add(Searcher.eq("tenantCode", operator.getTenantCode()));
+				products = (List<ProductEntity>) productService.findAll(searchFilters);
+			}else{
+				products = (List<ProductEntity>) productService.findAll();
+			}
 			List<ProductDto> dtos = products.stream().map(p -> {
 				ProductDto product = new ProductDto();
 				BUtils.copyPropertiesIgnoreNull(p, product);
@@ -256,6 +275,9 @@ public class ProductController {
 			Preconditions.checkNotNull(id, "id参数异常");
 			ProductEntity product = productService.findOne(id);
 			Preconditions.checkNotNull(product, "查无对应产品");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),product.getTenantCode()),"非本租户下的产品，无权操作");
+			}
 			//判断若有该产品出库单数据则无法执行删除
 			SearchFilters searchFilters = new SearchFilters();
 			searchFilters.add(Searcher.eq("productId", id));

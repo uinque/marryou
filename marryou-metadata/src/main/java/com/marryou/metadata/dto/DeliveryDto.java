@@ -115,6 +115,8 @@ public class DeliveryDto implements Serializable {
      */
     private String endTime;
 
+    private String tenantCode;
+
     public DeliveryDto() {
     }
 
@@ -326,6 +328,14 @@ public class DeliveryDto implements Serializable {
         this.title = title;
     }
 
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
     @Override
     public String toString() {
         return "DeliveryDto{" +
@@ -355,6 +365,7 @@ public class DeliveryDto implements Serializable {
                 ", standards=" + standards +
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
+                ", tenantCode='" + tenantCode + '\'' +
                 '}';
     }
 }
