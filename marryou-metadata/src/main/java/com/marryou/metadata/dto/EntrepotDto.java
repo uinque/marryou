@@ -15,6 +15,9 @@ public class EntrepotDto implements Serializable {
     private String name;
 
     private String remark;
+
+    private String tenantCode;
+
     /**
      * 状态0=正常，1=失效
      */
@@ -53,6 +56,14 @@ public class EntrepotDto implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
     }
 
     public Integer getStatus() {
@@ -97,10 +108,11 @@ public class EntrepotDto implements Serializable {
 
     @Override
     public String toString() {
-        return "EntreportDto{" +
+        return "EntrepotDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", remark='" + remark + '\'' +
+                ", tenantCode='" + tenantCode + '\'' +
                 ", status=" + status +
                 ", createBy='" + createBy + '\'' +
                 ", createTime=" + createTime +

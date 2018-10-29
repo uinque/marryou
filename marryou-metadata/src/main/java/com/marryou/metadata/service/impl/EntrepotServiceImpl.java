@@ -73,14 +73,14 @@ public class EntrepotServiceImpl extends AbsBaseService<EntrepotEntity, Entrepot
 	public void saveEntrepot(EntrepotEntity entrepot, String logContent, OperateTypeEnum type, String operate) {
 		this.save(entrepot);
 		operateLogService.save(
-				new OperateLogEntity(logContent, type, entrepot.getId(), LogTypeEnum.COMPANY, operate, new Date()));
+				new OperateLogEntity(logContent, type, entrepot.getId(), LogTypeEnum.COMPANY, operate, new Date(), entrepot.getTenantCode()));
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteEntrepot(EntrepotEntity entrepot, String logContent, OperateTypeEnum type, String operate) {
 		operateLogService.save(
-				new OperateLogEntity(logContent, type, entrepot.getId(), LogTypeEnum.COMPANY, operate, new Date()));
+				new OperateLogEntity(logContent, type, entrepot.getId(), LogTypeEnum.COMPANY, operate, new Date(), entrepot.getTenantCode()));
 		this.delete(entrepot.getId());
 	}
 

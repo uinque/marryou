@@ -91,6 +91,7 @@ public class EntrepotController {
 			Preconditions.checkState(StringUtils.isNotBlank(entrepotDto.getName()), "仓库名称为null");
 			EntrepotEntity entrepot = new EntrepotEntity();
 			BUtils.copyPropertiesIgnoreNull(entrepotDto, entrepot);
+			entrepot.setTenantCode(operator.getTenantCode());
 			entrepot.setStatus(StatusEnum.getEnum(entrepotDto.getStatus()));
 			entrepot.setCreateBy(loginName);
 			entrepot.setCreateTime(new Date());
@@ -120,13 +121,15 @@ public class EntrepotController {
 		}
 	}
 
-	@ApiOperation(value = "仓库列表", notes = "获取仓库列表数据")
+	@ApiOperation(value = "有效仓库列表", notes = "获取有效仓库列表数据")
 	@ApiImplicitParam(name = "search", value = "查询仓库信息", required = false, dataType = "Object")
 	@PostMapping("/listAll")
 	public @ResponseBody BaseResponse<List<EntrepotDto>> listAll() {
 		try {
 			List<EntrepotDto> list = Lists.newArrayList();
-			List<EntrepotEntity> entrepotEntities = (List<EntrepotEntity>) entrepotService.findAll();
+			SearchFilters searchFilters = new SearchFilters();
+			searchFilters.add(Searcher.eq("status", StatusEnum.EFFECTIVE.getValue()));
+			List<EntrepotEntity> entrepotEntities = entrepotService.findAll(searchFilters);
 			if(Collections3.isNotEmpty(entrepotEntities)){
 				list = entrepotEntities.stream().map(c -> {
 					EntrepotDto entrepotDto = new EntrepotDto();
@@ -137,8 +140,8 @@ public class EntrepotController {
 			}
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success", list);
 		} catch (Exception e) {
-			logger.info("获取仓库列表失败:{}", e.getMessage(), e);
-			return new BaseResponse(BaseResponse.CODE_FAILED, "获取仓库列表失败");
+			logger.info("获取有效仓库列表失败:{}", e.getMessage(), e);
+			return new BaseResponse(BaseResponse.CODE_FAILED, "获取有效仓库列表失败");
 		}
 	}
 
