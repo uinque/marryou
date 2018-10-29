@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.marryou.dto.request.VaildateRequest;
 import com.marryou.metadata.dto.TenantDto;
 import com.marryou.metadata.entity.TenantEntity;
 import com.marryou.metadata.service.TenantService;
@@ -50,6 +51,22 @@ public class TenantController {
 	private UserService userService;
 	@Autowired
 	private TenantService tenantService;
+
+	@PostMapping("/vaildate")
+	public @ResponseBody BaseResponse vaild(String tenantCode, HttpServletRequest request) {
+		try {
+			Preconditions.checkState(StringUtils.isNotBlank(tenantCode), "租户编码为null");
+			TenantEntity tenant = tenantService.findByTenantCode(tenantCode);
+			if (null != tenant) {
+				return new BaseResponse(BaseResponse.CODE_FAILED, "该租户编码已被使用");
+			} else {
+				return new BaseResponse(BaseResponse.CODE_SUCCESS, "该租户编码尚未被使用");
+			}
+		} catch (Exception e) {
+			logger.info("租户编码验证异常:{}", e.getMessage(), e);
+			return new BaseResponse(BaseResponse.CODE_FAILED, "租户编码验证异常:" + e.getMessage());
+		}
+	}
 
 	@ApiOperation(value = "创建租户信息", notes = "提交租户基础信息")
 	@ApiImplicitParam(name = "tenant", value = "租户基础信息", required = true, dataType = "Object")

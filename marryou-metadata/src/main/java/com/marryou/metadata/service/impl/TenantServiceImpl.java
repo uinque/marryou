@@ -1,9 +1,14 @@
 package com.marryou.metadata.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
+import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.metadata.dao.TenantDao;
 import com.marryou.metadata.entity.TenantEntity;
+import com.marryou.metadata.enums.StatusEnum;
+import com.marryou.metadata.persistence.SearchFilters;
+import com.marryou.metadata.persistence.Searcher;
 import com.marryou.metadata.service.TenantService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +36,13 @@ public class TenantServiceImpl extends AbsBaseService<TenantEntity, TenantDao>
 	@Override
 	public TenantEntity findByTenantCode(String tenantCode) {
 		if(StringUtils.isNotBlank(tenantCode)){
-
+			SearchFilters searchFilters = new SearchFilters();
+			searchFilters.add(Searcher.eq("tenantCode", tenantCode));
+			//searchFilters.add(Searcher.eq("status", StatusEnum.EFFECTIVE));
+			List<TenantEntity> list = this.findAll(searchFilters);
+			if(Collections3.isNotEmpty(list)){
+				return list.get(0);
+			}
 		}
 		return null;
 	}
