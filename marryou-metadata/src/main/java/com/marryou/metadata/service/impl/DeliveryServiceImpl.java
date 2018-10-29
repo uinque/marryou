@@ -84,7 +84,7 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 				Path<Long> productId = root.get("productId");
 				Path<StatusEnum> status = root.get("status");
 				Path<Date> outTime = root.get("outTime");
-				Path<Date> createTime = root.get("createTime");
+				//Path<Date> createTime = root.get("createTime");
 				Path<String> tenantCode = root.get("tenantCode");
 				if (null != search) {
 					if (null != search.getId()) {
@@ -168,7 +168,7 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 					Path<Long> productId = root.get("productId");
 					Path<StatusEnum> status = root.get("status");
 					Path<Date> outTime = root.get("outTime");
-					Path<Date> createTime = root.get("createTime");
+					//Path<Date> createTime = root.get("createTime");
 					Path<String> tenantCode = root.get("tenantCode");
 					if (null != search) {
 						if (null != search.getId()) {
@@ -211,7 +211,7 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 							where.add(cb.and(cb.equal(status, StatusEnum.getEnum(search.getStatus()))));
 						}
 						if (StringUtils.isNotBlank(search.getTenantCode())) {
-							where.add(cb.and(cb.equal(tenantCode, search.getTechno())));
+							where.add(cb.and(cb.equal(tenantCode, search.getTenantCode())));
 						}
 						if (StringUtils.isNotBlank(search.getStartTime())
 								&& StringUtils.isNotBlank(search.getEndTime())) {
