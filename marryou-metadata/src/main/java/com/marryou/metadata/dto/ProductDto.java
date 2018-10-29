@@ -43,6 +43,8 @@ public class ProductDto implements Serializable {
 
     private Date modifyTime;
 
+    private String tenantCode;
+
     private List<StandardDto> standards;
 
     public ProductDto() {
@@ -144,6 +146,14 @@ public class ProductDto implements Serializable {
         this.modifyTime = modifyTime;
     }
 
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
     public List<StandardDto> getStandards() {
         return standards;
     }
@@ -167,6 +177,7 @@ public class ProductDto implements Serializable {
                 ", createTime=" + createTime +
                 ", modifyBy='" + modifyBy + '\'' +
                 ", modifyTime=" + modifyTime +
+                ", tenantCode='" + tenantCode + '\'' +
                 ", standards=" + standards +
                 '}';
     }

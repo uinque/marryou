@@ -42,6 +42,7 @@ public class OperateLogServiceImpl extends AbsBaseService<OperateLogEntity, Oper
                 Path<LogTypeEnum> type = root.get("type");
                 Path<Long> relationId = root.get("relationId");
                 Path<Date> createTime = root.get("createTime");
+                Path<String> tenantCode = root.get("tenantCode");
                 if (null != search) {
                     if (null != search.getId()) {
                         where.add(cb.and(cb.equal(id, search.getId())));
@@ -54,6 +55,9 @@ public class OperateLogServiceImpl extends AbsBaseService<OperateLogEntity, Oper
                     }
                     if(null!=search.getRelationId()){
                         where.add(cb.and(cb.equal(relationId, search.getRelationId())));
+                    }
+                    if(StringUtils.isNotBlank(search.getTenantCode())){
+                        where.add(cb.and(cb.equal(tenantCode, search.getTenantCode())));
                     }
                     if (StringUtils.isNotBlank(search.getStartTime()) && StringUtils.isNotBlank(search.getEndTime())) {
                         where.add(cb.and(cb.between(createTime, DateUtils.convertToDateTime(search.getStartTime()),

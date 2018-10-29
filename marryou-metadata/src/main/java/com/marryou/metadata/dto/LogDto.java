@@ -34,6 +34,8 @@ public class LogDto implements Serializable {
 
     private String endTime;
 
+    private String tenantCode;
+
     public LogDto() {
     }
 
@@ -107,5 +109,13 @@ public class LogDto implements Serializable {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
     }
 }

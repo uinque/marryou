@@ -22,37 +22,38 @@ import java.util.List;
 @Service
 public class ProductServiceImpl extends AbsBaseService<ProductEntity, ProductDao> implements ProductService {
 
-    @Autowired
-    private OperateLogService operateLogService;
-    @Autowired
-    private StandardService standardService;
+	@Autowired
+	private OperateLogService operateLogService;
+	@Autowired
+	private StandardService standardService;
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateProduct(ProductEntity product, List<Long> standardsIds, String logContent, OperateTypeEnum type, String operate) {
-        this.save(product);
-        operateLogService.save(new OperateLogEntity(logContent, type, product.getId(),
-                LogTypeEnum.PRODUCT,operate, new Date()));
-        if(Collections3.isNotEmpty(standardsIds)){
-            standardsIds.forEach(id->{
-                standardService.delete(id);
-            });
-        }
-    }
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void updateProduct(ProductEntity product, List<Long> standardsIds, String logContent, OperateTypeEnum type,
+			String operate) {
+		this.save(product);
+		operateLogService.save(new OperateLogEntity(logContent, type, product.getId(), LogTypeEnum.PRODUCT, operate,
+				new Date(), product.getTenantCode()));
+		if (Collections3.isNotEmpty(standardsIds)) {
+			standardsIds.forEach(id -> {
+				standardService.delete(id);
+			});
+		}
+	}
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void saveProduct(ProductEntity product, String logContent, OperateTypeEnum type, String operate) {
-        this.save(product);
-        operateLogService.save(new OperateLogEntity(logContent, type, product.getId(),
-                LogTypeEnum.PRODUCT,operate, new Date()));
-    }
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void saveProduct(ProductEntity product, String logContent, OperateTypeEnum type, String operate) {
+		this.save(product);
+		operateLogService.save(new OperateLogEntity(logContent, type, product.getId(), LogTypeEnum.PRODUCT, operate,
+				new Date(), product.getTenantCode()));
+	}
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteProduct(ProductEntity product, String logContent, OperateTypeEnum type, String operate) {
-        operateLogService.save(new OperateLogEntity(logContent, type,product.getId(),
-                LogTypeEnum.PRODUCT, operate, new Date()));
-        this.delete(product.getId());
-    }
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteProduct(ProductEntity product, String logContent, OperateTypeEnum type, String operate) {
+		operateLogService.save(new OperateLogEntity(logContent, type, product.getId(), LogTypeEnum.PRODUCT, operate,
+				new Date(), product.getTenantCode()));
+		this.delete(product.getId());
+	}
 }

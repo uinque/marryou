@@ -23,6 +23,7 @@ import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import com.marryou.utils.RoleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,10 @@ public class CompanyController {
 		try {
 			Preconditions.checkNotNull(vaildate,"验证参数异常");
 			Preconditions.checkState(StringUtils.isNotBlank(vaildate.getCompanyName()),"公司名参数为null");
-			CompanyEntity company = companyService.findCompanyByCompanyName(vaildate.getCompanyName());
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
+			CompanyEntity company = companyService.findCompanyByCompanyName(vaildate.getCompanyName(),operator.getTenantCode());
 			if(null!=company){
 				return new BaseResponse(BaseResponse.CODE_FAILED, "该公司名称名已被使用");
 			}else{
@@ -88,6 +92,7 @@ public class CompanyController {
 			CompanyEntity cp = new CompanyEntity();
 			BUtils.copyPropertiesIgnoreNull(company, cp);
 			cp.setStatus(StatusEnum.getEnum(company.getStatus()));
+			cp.setTenantCode(operator.getTenantCode());
 			cp.setCreateBy(loginName);
 			cp.setCreateTime(new Date());
 			companyService.saveCompany(cp, GsonUtils.buildGson().toJson(cp), OperateTypeEnum.CREATE, loginName);
@@ -119,10 +124,20 @@ public class CompanyController {
 	@ApiOperation(value = "公司列表", notes = "获取公司列表数据")
 	@ApiImplicitParam(name = "search", value = "查询公司信息", required = false, dataType = "Object")
 	@PostMapping("/listAll")
-	public @ResponseBody BaseResponse<List<CompanyDto>> listAll() {
+	public @ResponseBody BaseResponse<List<CompanyDto>> listAll(HttpServletRequest request) {
 		try {
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
+			List<CompanyEntity> companyEntities = Lists.newArrayList();
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				SearchFilters searchFilters = new SearchFilters();
+				searchFilters.add(Searcher.eq("tenantCode", operator.getTenantCode()));
+				companyEntities = (List<CompanyEntity>) companyService.findAll(searchFilters);
+			}else {
+				companyEntities = (List<CompanyEntity>) companyService.findAll();
+			}
 			List<CompanyDto> list = Lists.newArrayList();
-			List<CompanyEntity> companyEntities = (List<CompanyEntity>) companyService.findAll();
 			if(Collections3.isNotEmpty(companyEntities)){
 				list = companyEntities.stream().map(c -> {
 					CompanyDto p = new CompanyDto();
@@ -141,9 +156,18 @@ public class CompanyController {
 	@ApiOperation(value = "公司列表", notes = "获取公司列表数据")
 	@ApiImplicitParam(name = "search", value = "查询公司信息", required = false, dataType = "Object")
 	@PostMapping("/list")
-	public @ResponseBody BaseResponse<PageResponse<CompanyDto>> list(@RequestBody BasePageRequest<CompanyDto> search) {
+	public @ResponseBody BaseResponse<PageResponse<CompanyDto>> list(@RequestBody BasePageRequest<CompanyDto> search,HttpServletRequest request) {
 		try {
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
 			Preconditions.checkNotNull(search, "查询参数异常");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				if(null==search.getParams()){
+					search.setParams(new CompanyDto());
+				}
+				search.getParams().setTenantCode(operator.getTenantCode());
+			}
 			Page<CompanyEntity> page = companyService.findCompanys(search.toPageRequest(), search.getParams());
 			List<CompanyDto> list = Lists.newArrayList();
 			if (Collections3.isNotEmpty(page.getContent())) {
@@ -175,6 +199,9 @@ public class CompanyController {
 			Preconditions.checkNotNull(company.getId(), "companyId为null");
 			CompanyEntity cp = companyService.findOne(company.getId());
 			Preconditions.checkNotNull(cp, "查无产品指标数据");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),cp.getTenantCode()),"非本租户下的公司，无权操作");
+			}
 			BUtils.copyPropertiesIgnoreNull(company, cp);
 			cp.setStatus(StatusEnum.getEnum(company.getStatus()));
 			cp.setModifyBy(loginName);
@@ -203,6 +230,9 @@ public class CompanyController {
 			Preconditions.checkState(Collections3.isEmpty(users), "此公司正在使用中，无法执行删除");
 			CompanyEntity company = companyService.findOne(id);
 			Preconditions.checkNotNull(company, "查无对应的公司信息");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),company.getTenantCode()),"非本租户下的公司，无权操作");
+			}
 			companyService.deleteCompany(company, "删除公司数据", OperateTypeEnum.DELETE, loginName);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success");
 		} catch (Exception e) {

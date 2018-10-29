@@ -29,6 +29,8 @@ public class MftDto implements Serializable {
 
     private String modifyBy;
 
+    private String tenantCode;
+
     public MftDto() {
     }
 
@@ -96,6 +98,14 @@ public class MftDto implements Serializable {
         this.modifyBy = modifyBy;
     }
 
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
     @Override
     public String toString() {
         return "MftDto{" +
@@ -107,6 +117,7 @@ public class MftDto implements Serializable {
                 ", createTime=" + createTime +
                 ", modifyTime=" + modifyTime +
                 ", modifyBy='" + modifyBy + '\'' +
+                ", tenantCode='" + tenantCode + '\'' +
                 '}';
     }
 }

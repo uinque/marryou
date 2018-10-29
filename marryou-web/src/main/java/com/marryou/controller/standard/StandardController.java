@@ -12,6 +12,7 @@ import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.service.StandardService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +67,12 @@ public class StandardController {
 			Preconditions.checkNotNull(standard.getProductId(),"productId为null");
 			ProductEntity product = productService.findOne(standard.getProductId());
 			Preconditions.checkNotNull(product,"查无对应产品");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),product.getTenantCode()),"非本租户下的产品，无权操作");
+			}
 			StandardEntity s = new StandardEntity();
 			BUtils.copyPropertiesIgnoreNull(standard, s);
+			s.setTenantCode(operator.getTenantCode());
 			s.setProduct(product);
             s.setCreateBy(loginName);
             s.setCreateTime(new Date());
@@ -92,6 +97,9 @@ public class StandardController {
 			Preconditions.checkNotNull(standard.getId(), "standardId为null");
 			StandardEntity s = standardService.findOne(standard.getId());
 			Preconditions.checkNotNull(s,"查无产品指标数据");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),s.getTenantCode()),"非本租户下的产品指标，无权操作");
+			}
 			BUtils.copyPropertiesIgnoreNull(standard, s);
             s.setModifyBy(loginName);
             s.setModifyTime(new Date());
@@ -117,6 +125,9 @@ public class StandardController {
 			Preconditions.checkNotNull(id, "id参数异常");
 			StandardEntity s = standardService.findOne(id);
 			Preconditions.checkNotNull(s,"查无对应的标准值数据");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),s.getTenantCode()),"非本租户下的产品指标，无权操作");
+			}
 			standardService.deleteStandard(s,"删除标准数据id:"+s.getId(), OperateTypeEnum.DELETE,loginName);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success");
 		} catch (Exception e) {

@@ -37,6 +37,8 @@ public class UserSearchDto implements Serializable {
     private Integer status;
     //必要
     private Long companyId;
+    //租户编码
+    private String tenantCode;
     /**
      * token签名
      */
@@ -164,6 +166,14 @@ public class UserSearchDto implements Serializable {
         this.companyId = companyId;
     }
 
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
     public String getToken() {
         return token;
     }
@@ -187,6 +197,7 @@ public class UserSearchDto implements Serializable {
                 ", role=" + role +
                 ", status=" + status +
                 ", companyId=" + companyId +
+                ", tenantCode='" + tenantCode + '\'' +
                 ", token='" + token + '\'' +
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +

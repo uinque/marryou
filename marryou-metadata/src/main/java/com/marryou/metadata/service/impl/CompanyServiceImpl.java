@@ -55,6 +55,7 @@ public class CompanyServiceImpl extends AbsBaseService<CompanyEntity, CompanyDao
 				Path<String> phone = root.get("phone");
 				Path<StatusEnum> status = root.get("status");
 				Path<Date> createTime = root.get("createTime");
+				Path<String> tenantCode = root.get("tenantCode");
 				if (null != search) {
 					if (null != search.getId()) {
 						where.add(cb.and(cb.equal(id, search.getId())));
@@ -74,6 +75,9 @@ public class CompanyServiceImpl extends AbsBaseService<CompanyEntity, CompanyDao
 					if (null != search.getStatus()) {
 						where.add(cb.and(cb.equal(status, StatusEnum.getEnum(search.getStatus()))));
 					}
+					if (StringUtils.isNotBlank(search.getTenantCode())) {
+						where.add(cb.and(cb.equal(tenantCode, search.getTenantCode())));
+					}
 					if (StringUtils.isNotBlank(search.getStartTime()) && StringUtils.isNotBlank(search.getEndTime())) {
 						where.add(cb.and(cb.between(createTime, DateUtils.convertToDateTime(search.getStartTime()),
 								DateUtils.convertToDateTime(search.getEndTime()))));
@@ -90,25 +94,28 @@ public class CompanyServiceImpl extends AbsBaseService<CompanyEntity, CompanyDao
 	@Transactional(rollbackFor = Exception.class)
 	public void saveCompany(CompanyEntity company, String logContent, OperateTypeEnum type, String operate) {
 		this.save(company);
-		operateLogService.save(
-				new OperateLogEntity(logContent, type, company.getId(), LogTypeEnum.COMPANY, operate, new Date()));
+		operateLogService.save(new OperateLogEntity(logContent, type, company.getId(), LogTypeEnum.COMPANY, operate,
+				new Date(), company.getTenantCode()));
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteCompany(CompanyEntity company, String logContent, OperateTypeEnum type, String operate) {
-		operateLogService.save(
-				new OperateLogEntity(logContent, type, company.getId(), LogTypeEnum.COMPANY, operate, new Date()));
+		operateLogService.save(new OperateLogEntity(logContent, type, company.getId(), LogTypeEnum.COMPANY, operate,
+				new Date(), company.getTenantCode()));
 		this.delete(company.getId());
 	}
 
 	@Override
-	public CompanyEntity findCompanyByCompanyName(String companyName) {
-		Preconditions.checkState(StringUtils.isNotBlank(companyName),"公司名称为null");
+	public CompanyEntity findCompanyByCompanyName(String companyName, String tenantCode) {
+		Preconditions.checkState(StringUtils.isNotBlank(companyName), "公司名称为null");
 		SearchFilters searchFilters = new SearchFilters();
 		searchFilters.add(Searcher.eq("name", companyName));
+		if (StringUtils.isNotBlank(tenantCode)) {
+			searchFilters.add(Searcher.eq("tenantCode", tenantCode));
+		}
 		List<CompanyEntity> list = this.findAll(searchFilters);
-		if(Collections3.isNotEmpty(list)){
+		if (Collections3.isNotEmpty(list)) {
 			return list.get(0);
 		}
 		return null;

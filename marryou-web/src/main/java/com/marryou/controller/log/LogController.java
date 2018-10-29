@@ -5,11 +5,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 
 import com.marryou.metadata.dto.LogDto;
 import com.marryou.metadata.entity.OperateLogEntity;
+import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.service.OperateLogService;
+import com.marryou.metadata.service.UserService;
+import com.marryou.utils.Constants;
+import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +52,8 @@ public class LogController {
 
 	@Autowired
 	private OperateLogService operateLogService;
+	@Autowired
+	private UserService userService;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -61,6 +69,15 @@ public class LogController {
 																 HttpServletRequest request) {
 		try {
 			Preconditions.checkNotNull(search, "查询参数异常");
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				if(null==search.getParams()){
+					search.setParams(new LogDto());
+				}
+				search.getParams().setTenantCode(operator.getTenantCode());
+			}
 			Page<OperateLogEntity> page = operateLogService.findLogs(search.toPageRequest(), search.getParams());
 			List<LogDto> logs = Lists.newArrayList();
 			if (Collections3.isNotEmpty(page.getContent())) {

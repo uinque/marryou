@@ -31,8 +31,8 @@ public class BaseEntity implements Serializable {
 	private Date modifyTime;
 
 	private String modifyBy;
-
-	//private Boolean isDeleted;
+	//租户编码
+	private String tenantCode;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -89,12 +89,12 @@ public class BaseEntity implements Serializable {
 		this.modifyBy = modifyBy;
 	}
 
-	/*@Column(name = "IS_DELETED", columnDefinition = "tinyint default 0 comment '逻辑删除字段(0:正常,1:删除)'")
-	public Boolean getDeleted() {
-		return isDeleted;
+	@Column(name = "tenant_code")
+	public String getTenantCode() {
+		return tenantCode;
 	}
 
-	public void setDeleted(Boolean deleted) {
-		isDeleted = deleted;
-	}*/
+	public void setTenantCode(String tenantCode) {
+		this.tenantCode = tenantCode;
+	}
 }

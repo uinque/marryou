@@ -25,6 +25,10 @@ public class DeliveryDto implements Serializable {
      */
     private String deliveryTime;
     /**
+     * 出厂日期 yyyy-MM-dd HH:mm:ss
+     */
+    private String outTime;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -120,13 +124,15 @@ public class DeliveryDto implements Serializable {
     private List<StandardParamsDto> standards;
 
     /**
-     * 出库单生产日期查询起始时间
+     * 出库单出厂日期查询起始时间
      */
     private String startTime;
     /**
-     * 出库单生产日期查询结束时间
+     * 出库单出厂日期查询结束时间
      */
     private String endTime;
+
+    private String tenantCode;
 
     public DeliveryDto() {
     }
@@ -153,6 +159,14 @@ public class DeliveryDto implements Serializable {
 
     public void setDeliveryTime(String deliveryTime) {
         this.deliveryTime = deliveryTime;
+    }
+
+    public String getOutTime() {
+        return outTime;
+    }
+
+    public void setOutTime(String outTime) {
+        this.outTime = outTime;
     }
 
     public Long getSupplierId() {
@@ -339,6 +353,14 @@ public class DeliveryDto implements Serializable {
         this.title = title;
     }
 
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
     public Long getEntrepotId() {
         return entrepotId;
     }
@@ -369,6 +391,7 @@ public class DeliveryDto implements Serializable {
                 "id=" + id +
                 ", deliveryNo='" + deliveryNo + '\'' +
                 ", deliveryTime='" + deliveryTime + '\'' +
+                ", outTime='" + outTime + '\'' +
                 ", supplierId=" + supplierId +
                 ", supplierName='" + supplierName + '\'' +
                 ", distributorId=" + distributorId +
@@ -395,6 +418,7 @@ public class DeliveryDto implements Serializable {
                 ", standards=" + standards +
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
+                ", tenantCode='" + tenantCode + '\'' +
                 '}';
     }
 }
