@@ -254,8 +254,8 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 			String content = baseUrl + "/scanResult/" + d.getId();
 			String fileName = d.getId() + ".jpg";
 			String tenantCode = deliveryOrder.getTenantCode();
-			String yyyyMMdd = DateUtils.formatDate(DateUtils.getCurrentDateTime(), "yyyyMMdd");
-			String imgUrl = middleUrl + "/" + tenantCode + "/" + yyyyMMdd + "/" + fileName;
+			String yyyyMM = DateUtils.formatDate(DateUtils.getCurrentDateTime(), "yyyyMM");
+			String imgUrl = middleUrl + "/" + tenantCode + "/" + yyyyMM + "/" + fileName;
 			boolean ans = QrCodeGenWrapper.of(content).setW(300).setDrawBgColor(0xffffffff).setPadding(0)
 					.setLogoStyle(QrCodeOptions.LogoStyle.ROUND).asFile(imgUrl);
 			Preconditions.checkState(ans, "生成二维码图片失败");
