@@ -10,7 +10,8 @@ public enum LogTypeEnum {
     PRODUCT(2, "产品"),
     DELIVERY(3, "出库单"),
     MANUFACTURE(4, "生厂商"),
-    STANDARD(5, "标准");
+    STANDARD(5, "标准"),
+    TENANT(6,"租户");
 
     private Integer value;
     private String text;

@@ -27,6 +27,7 @@ import com.marryou.metadata.entity.DeliveryStandardEntity;
 import com.marryou.metadata.entity.ManufacturerEntity;
 import com.marryou.metadata.entity.ProductEntity;
 import com.marryou.metadata.entity.StandardEntity;
+import com.marryou.metadata.entity.TenantEntity;
 import com.marryou.metadata.enums.LevelEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.TechnoEnum;
@@ -38,6 +39,7 @@ import com.marryou.metadata.service.ManufacturerService;
 import com.marryou.metadata.service.ProductService;
 import com.marryou.metadata.service.RedisService;
 import com.marryou.metadata.service.StandardService;
+import com.marryou.metadata.service.TenantService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
@@ -93,6 +95,8 @@ public class DeliveryController {
 	private ManufacturerService manufacturerService;
 	@Autowired
 	private CompanyService companyService;
+	@Autowired
+	private TenantService tenantService;
 
 	@ApiOperation(value = "创建出库单", notes = "提交出库单数据")
 	@ApiImplicitParam(name = "delivery", value = "出库单信息", required = true, dataType = "Object")
@@ -212,6 +216,10 @@ public class DeliveryController {
 				} else {
 					info.setRemark(null);
 				}
+			}
+			TenantEntity tenant = tenantService.findByTenantCode(info.getTenantCode());
+			if(null!=tenant){
+				info.setAllowModifyOutTime(tenant.getModifyOutTimeFlag());
 			}
 			List<DeliveryStandardEntity> list = delivery.getStandards();
 			//Preconditions.checkState(Collections3.isNotEmpty(list), "查无对应出库单检验结果");
