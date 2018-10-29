@@ -1,18 +1,11 @@
 package com.marryou.metadata.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.commons.utils.qrcode.wrapper.QrCodeGenWrapper;
 import com.marryou.commons.utils.qrcode.wrapper.QrCodeOptions;
+import com.marryou.commons.utils.time.DateUtils;
 import com.marryou.metadata.dao.DeliveryDao;
 import com.marryou.metadata.dto.DeliveryCountDto;
 import com.marryou.metadata.dto.DeliveryDto;
@@ -22,6 +15,7 @@ import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.enums.LevelEnum;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
+import com.marryou.metadata.enums.StatusEnum;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.DeliveryStandardService;
 import com.marryou.metadata.service.OperateLogService;
@@ -34,16 +28,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.marryou.commons.utils.time.DateUtils;
-import com.marryou.metadata.dao.CompanyDao;
-import com.marryou.metadata.dto.CompanyDto;
-import com.marryou.metadata.entity.CompanyEntity;
-import com.marryou.metadata.enums.StatusEnum;
-import com.marryou.metadata.service.CompanyService;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by linhy on 2018/6/6.
@@ -259,7 +253,9 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 		try {
 			String content = baseUrl + "/scanResult/" + d.getId();
 			String fileName = d.getId() + ".jpg";
-			String imgUrl = middleUrl + "/" + fileName;
+			String tenantCode = deliveryOrder.getTenantCode();
+			String yyyyMMdd = DateUtils.formatDate(DateUtils.getCurrentDateTime(), "yyyyMMdd");
+			String imgUrl = middleUrl + "/" + tenantCode + "/" + yyyyMMdd + "/" + fileName;
 			boolean ans = QrCodeGenWrapper.of(content).setW(300).setDrawBgColor(0xffffffff).setPadding(0)
 					.setLogoStyle(QrCodeOptions.LogoStyle.ROUND).asFile(imgUrl);
 			Preconditions.checkState(ans, "生成二维码图片失败");
