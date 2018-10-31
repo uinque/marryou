@@ -21,9 +21,15 @@ public class TenantEntity extends BaseEntity {
 
     private static final long serialVersionUID = 4873052956296068049L;
 
+    public static final Integer OUTTIME_FLAG_NO = 0;
+
+    public static final Integer OUTTIME_FLAG_ALLOW = 1;
+
     private String name;
 
     private String info;
+
+    private StatusEnum status;
 
     /**
      * 是否允许修改出厂时间(0=不允许，1=允许)
@@ -33,9 +39,10 @@ public class TenantEntity extends BaseEntity {
     public TenantEntity() {
     }
 
-    public TenantEntity(String name, String info, Integer modifyOutTimeFlag) {
+    public TenantEntity(String name, String info, StatusEnum status, Integer modifyOutTimeFlag) {
         this.name = name;
         this.info = info;
+        this.status = status;
         this.modifyOutTimeFlag = modifyOutTimeFlag;
     }
 
@@ -57,6 +64,15 @@ public class TenantEntity extends BaseEntity {
         this.info = info;
     }
 
+    @Column(name = "status")
+    public StatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusEnum status) {
+        this.status = status;
+    }
+
     @Column(name = "time_flag")
     public Integer getModifyOutTimeFlag() {
         return modifyOutTimeFlag;
@@ -71,6 +87,7 @@ public class TenantEntity extends BaseEntity {
         return "TenantEntity{" +
                 "name='" + name + '\'' +
                 ", info='" + info + '\'' +
+                ", status=" + status +
                 ", modifyOutTimeFlag=" + modifyOutTimeFlag +
                 "} " + super.toString();
     }

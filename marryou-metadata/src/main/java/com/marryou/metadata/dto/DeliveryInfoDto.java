@@ -1,5 +1,7 @@
 package com.marryou.metadata.dto;
 
+import com.marryou.metadata.entity.TenantEntity;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +20,10 @@ public class DeliveryInfoDto{
      * 生产日期
      */
     private Date deliveryTime;
+    /**
+     * 出厂时间
+     */
+    private Date outTime;
     /**
      * 供应商Id
      */
@@ -119,6 +125,12 @@ public class DeliveryInfoDto{
 
     private String modifyBy;
 
+    private String tenantCode;
+    /**
+     * 0=不允许，1=允许
+     */
+    private Integer allowModifyOutTime = TenantEntity.OUTTIME_FLAG_NO;
+
     /**
      * 标准值
      */
@@ -146,6 +158,14 @@ public class DeliveryInfoDto{
 
     public void setDeliveryTime(Date deliveryTime) {
         this.deliveryTime = deliveryTime;
+    }
+
+    public Date getOutTime() {
+        return outTime;
+    }
+
+    public void setOutTime(Date outTime) {
+        this.outTime = outTime;
     }
 
     public Long getSupplierId() {
@@ -306,6 +326,22 @@ public class DeliveryInfoDto{
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
+    public Integer getAllowModifyOutTime() {
+        return allowModifyOutTime;
+    }
+
+    public void setAllowModifyOutTime(Integer allowModifyOutTime) {
+        this.allowModifyOutTime = allowModifyOutTime;
     }
 
     public String getCreateBy() {

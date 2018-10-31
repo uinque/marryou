@@ -17,6 +17,8 @@ public class VaildateRequest implements Serializable{
 
     private Long deliveryId;
 
+    private String tenantCode;
+
 
     public String getLoginName() {
         return loginName;
@@ -34,6 +36,21 @@ public class VaildateRequest implements Serializable{
         this.companyName = companyName;
     }
 
+    public Long getDeliveryId() {
+        return deliveryId;
+    }
+
+    public void setDeliveryId(Long deliveryId) {
+        this.deliveryId = deliveryId;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
     public String getEntrepotName() {
         return entrepotName;
     }
@@ -47,6 +64,8 @@ public class VaildateRequest implements Serializable{
         return "VaildateRequest{" +
                 "loginName='" + loginName + '\'' +
                 ", companyName='" + companyName + '\'' +
+                ", deliveryId=" + deliveryId +
+                ", tenantCode='" + tenantCode + '\'' +
                 ", entrepotName='" + entrepotName + '\'' +
                 '}';
     }
