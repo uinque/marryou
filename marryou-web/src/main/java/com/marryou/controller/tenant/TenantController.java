@@ -53,10 +53,11 @@ public class TenantController {
 	private TenantService tenantService;
 
 	@PostMapping("/vaildate")
-	public @ResponseBody BaseResponse vaild(String tenantCode, HttpServletRequest request) {
+	public @ResponseBody BaseResponse vaild(@RequestBody VaildateRequest vaildate, HttpServletRequest request) {
 		try {
-			Preconditions.checkState(StringUtils.isNotBlank(tenantCode), "租户编码为null");
-			TenantEntity tenant = tenantService.findByTenantCode(tenantCode);
+			Preconditions.checkNotNull(vaildate,"请求参数为null");
+			Preconditions.checkState(StringUtils.isNotBlank(vaildate.getTenantCode()), "租户编码为null");
+			TenantEntity tenant = tenantService.findByTenantCode(vaildate.getTenantCode());
 			if (null != tenant) {
 				return new BaseResponse(BaseResponse.CODE_FAILED, "该租户编码已被使用");
 			} else {
