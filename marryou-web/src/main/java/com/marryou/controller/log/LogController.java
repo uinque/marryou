@@ -1,21 +1,22 @@
 package com.marryou.controller.log;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.management.relation.Role;
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.marryou.commons.utils.base.BUtils;
+import com.marryou.commons.utils.collections.Collections3;
+import com.marryou.dto.request.BasePageRequest;
+import com.marryou.dto.response.BaseResponse;
+import com.marryou.dto.response.PageResponse;
 import com.marryou.metadata.dto.LogDto;
 import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.entity.UserEntity;
-import com.marryou.metadata.service.OperateLogService;
-import com.marryou.metadata.service.UserService;
+import com.marryou.service.OperateLogService;
+import com.marryou.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +30,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.marryou.commons.utils.base.BUtils;
-import com.marryou.commons.utils.collections.Collections3;
-import com.marryou.dto.request.BasePageRequest;
-import com.marryou.dto.response.BaseResponse;
-import com.marryou.dto.response.PageResponse;
-
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Administrator

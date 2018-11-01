@@ -1,13 +1,12 @@
-package com.marryou.metadata.service.impl;
+package com.marryou.service.impl;
 
 import com.marryou.metadata.dao.ManufacturerDao;
 import com.marryou.metadata.entity.ManufacturerEntity;
 import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
-import com.marryou.metadata.service.ManufacturerService;
-import com.marryou.metadata.service.OperateLogService;
-import com.sun.tools.doclets.formats.html.resources.standard;
+import com.marryou.service.ManufacturerService;
+import com.marryou.service.OperateLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

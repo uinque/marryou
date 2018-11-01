@@ -1,4 +1,4 @@
-package com.marryou.metadata.service;
+package com.marryou.service;
 
 import com.marryou.metadata.dao.DeliveryDao;
 import com.marryou.metadata.dto.DeliveryCountDto;

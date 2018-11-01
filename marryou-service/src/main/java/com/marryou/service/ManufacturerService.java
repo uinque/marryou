@@ -1,8 +1,7 @@
-package com.marryou.metadata.service;
+package com.marryou.service;
 
 import com.marryou.metadata.dao.ManufacturerDao;
 import com.marryou.metadata.entity.ManufacturerEntity;
-import com.marryou.metadata.entity.StandardEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
 
 /**

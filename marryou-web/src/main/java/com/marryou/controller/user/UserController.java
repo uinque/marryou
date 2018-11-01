@@ -17,8 +17,8 @@ import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.RoleEnum;
 import com.marryou.metadata.enums.StatusEnum;
-import com.marryou.metadata.service.CompanyService;
-import com.marryou.metadata.service.UserService;
+import com.marryou.service.CompanyService;
+import com.marryou.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
@@ -33,7 +33,6 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -248,7 +247,7 @@ public class UserController {
 			UserEntity u = userService.findOne(user.getId());
 			Preconditions.checkNotNull(u, "查无对应user数据");
 			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
-				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),user.getTenantCode()),"非本租户下的用户无权操作");
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),u.getTenantCode()),"非本租户下的用户无权操作");
 			}
 			if (!operator.getRole().equals(RoleEnum.SUPER_ADMIN)) {
 				Preconditions.checkState(u.getRole().getValue() > operator.getRole().getValue(), "无权限跟新该角色用户");

@@ -1,6 +1,6 @@
-package com.marryou.metadata.service.impl;
+package com.marryou.service.impl;
 
-import com.marryou.metadata.service.RedisService;
+import com.marryou.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;

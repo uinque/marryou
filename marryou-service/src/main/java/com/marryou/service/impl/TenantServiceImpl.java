@@ -1,27 +1,22 @@
-package com.marryou.metadata.service.impl;
-
-import java.util.Date;
-import java.util.List;
+package com.marryou.service.impl;
 
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.metadata.dao.TenantDao;
+import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.entity.TenantEntity;
-import com.marryou.metadata.enums.StatusEnum;
+import com.marryou.metadata.enums.LogTypeEnum;
+import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.persistence.SearchFilters;
 import com.marryou.metadata.persistence.Searcher;
-import com.marryou.metadata.service.TenantService;
+import com.marryou.service.OperateLogService;
+import com.marryou.service.TenantService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.marryou.metadata.dao.ManufacturerDao;
-import com.marryou.metadata.entity.ManufacturerEntity;
-import com.marryou.metadata.entity.OperateLogEntity;
-import com.marryou.metadata.enums.LogTypeEnum;
-import com.marryou.metadata.enums.OperateTypeEnum;
-import com.marryou.metadata.service.ManufacturerService;
-import com.marryou.metadata.service.OperateLogService;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by linhy on 2018/6/6.
