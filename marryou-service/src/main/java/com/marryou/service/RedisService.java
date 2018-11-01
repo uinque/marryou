@@ -1,4 +1,4 @@
-package com.marryou.metadata.service;
+package com.marryou.service;
 
 import java.util.List;
 import java.util.Set;

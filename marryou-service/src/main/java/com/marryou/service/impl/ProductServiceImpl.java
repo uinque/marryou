@@ -1,4 +1,4 @@
-package com.marryou.metadata.service.impl;
+package com.marryou.service.impl;
 
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.metadata.dao.ProductDao;
@@ -6,9 +6,9 @@ import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.entity.ProductEntity;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
-import com.marryou.metadata.service.OperateLogService;
-import com.marryou.metadata.service.ProductService;
-import com.marryou.metadata.service.StandardService;
+import com.marryou.service.OperateLogService;
+import com.marryou.service.ProductService;
+import com.marryou.service.StandardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

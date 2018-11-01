@@ -1,4 +1,4 @@
-package com.marryou.metadata.service;
+package com.marryou.service;
 
 import com.marryou.metadata.dao.OperateLogDao;
 import com.marryou.metadata.dto.LogDto;

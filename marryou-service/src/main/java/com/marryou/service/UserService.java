@@ -1,4 +1,4 @@
-package com.marryou.metadata.service;
+package com.marryou.service;
 
 import com.marryou.metadata.dto.UserSearchDto;
 import com.marryou.metadata.entity.UserEntity;

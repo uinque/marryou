@@ -1,50 +1,46 @@
 package com.marryou.controller.company;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.marryou.commons.utils.base.BUtils;
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.commons.utils.json.GsonUtils;
 import com.marryou.dto.request.BasePageRequest;
 import com.marryou.dto.request.VaildateRequest;
+import com.marryou.dto.response.BaseResponse;
 import com.marryou.dto.response.PageResponse;
 import com.marryou.metadata.dto.CompanyDto;
 import com.marryou.metadata.entity.CompanyEntity;
+import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
+import com.marryou.metadata.enums.RoleEnum;
 import com.marryou.metadata.enums.StatusEnum;
 import com.marryou.metadata.persistence.SearchFilters;
 import com.marryou.metadata.persistence.Searcher;
-import com.marryou.metadata.service.CompanyService;
+import com.marryou.service.CompanyService;
+import com.marryou.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.base.Preconditions;
-import com.marryou.dto.response.BaseResponse;
-import com.marryou.metadata.entity.UserEntity;
-import com.marryou.metadata.enums.RoleEnum;
-import com.marryou.metadata.service.UserService;
-
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by linhy on 2018/6/6.

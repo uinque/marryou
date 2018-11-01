@@ -3,13 +3,11 @@ package com.marryou.controller.standard;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import com.marryou.commons.utils.base.BUtils;
 import com.marryou.metadata.dto.StandardDto;
-import com.marryou.metadata.entity.CompanyEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
-import com.marryou.metadata.service.StandardService;
+import com.marryou.service.StandardService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
@@ -18,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,8 +28,8 @@ import com.marryou.metadata.entity.ProductEntity;
 import com.marryou.metadata.entity.StandardEntity;
 import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.enums.RoleEnum;
-import com.marryou.metadata.service.ProductService;
-import com.marryou.metadata.service.UserService;
+import com.marryou.service.ProductService;
+import com.marryou.service.UserService;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

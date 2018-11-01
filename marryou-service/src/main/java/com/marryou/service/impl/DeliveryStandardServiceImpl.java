@@ -1,8 +1,8 @@
-package com.marryou.metadata.service.impl;
+package com.marryou.service.impl;
 
 import com.marryou.metadata.dao.DeliveryStandardDao;
 import com.marryou.metadata.entity.DeliveryStandardEntity;
-import com.marryou.metadata.service.DeliveryStandardService;
+import com.marryou.service.DeliveryStandardService;
 import org.springframework.stereotype.Service;
 
 /**

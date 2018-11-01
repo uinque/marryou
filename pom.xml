@@ -11,6 +11,7 @@
         <module>marryou-commons-utils</module>
         <module>marryou-commons-web</module>
         <module>marryou-metadata</module>
+        <module>marryou-service</module>
         <module>marryou-web</module>
     </modules>
     <packaging>pom</packaging>
@@ -32,6 +33,7 @@
         <marryou.commons.utils.version>1.0-SNAPSHOT</marryou.commons.utils.version>
         <marryou.commons.web.version>1.0-SNAPSHOT</marryou.commons.web.version>
         <marryou.metadata.version>1.0-SNAPSHOT</marryou.metadata.version>
+        <marryou.service.version>1.0-SNAPSHOT</marryou.service.version>
         <marryou.web.version>1.0-SNAPSHOT</marryou.web.version>
 
         <commons-lang3.version>3.3.2</commons-lang3.version>
