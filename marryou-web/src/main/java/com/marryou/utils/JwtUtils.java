@@ -98,11 +98,18 @@ public class JwtUtils {
 
     public static void main(String[] args) throws InterruptedException {
         //小明失效 10s
-        String sc = createJWT("1","小明", 3000);
+        /*String sc = createJWT("1","小明", 3000);
         System.out.println(sc);
         System.out.println(validateJWT(sc).getErrCode());
         System.out.println(validateJWT(sc).getClaims().getId());
         //Thread.sleep(3000);
-        System.out.println(validateJWT(sc).getClaims());
+        System.out.println(validateJWT(sc).getClaims());*/
+
+        String token ="eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwic3ViIjoibGxkIiwiaXNzIjoidW5pcXVlIiwiaWF0IjoxNTQxMDU1NTMwLCJleHAiOjE1NDExMjc1MzB9.9Bg7zHfwNSWPvPCMDanBN-Nz52fAjqrMqd2PHl26nlo";
+        try {
+            System.out.println(JwtUtils.parseJWT(token).getSubject());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

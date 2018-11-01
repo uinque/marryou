@@ -147,6 +147,7 @@ public class ProductController {
 						} else {
 							StandardEntity standardEntity = new StandardEntity();
 							BUtils.copyPropertiesIgnoreNull(s, standardEntity, "id");
+							standardEntity.setTenantCode(p.getTenantCode());
 							standardEntity.setProduct(p);
 							standardEntity.setCreateTime(new Date());
 							standardEntity.setCreateBy(loginName);

@@ -248,7 +248,7 @@ public class UserController {
 			UserEntity u = userService.findOne(user.getId());
 			Preconditions.checkNotNull(u, "查无对应user数据");
 			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
-				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),user.getTenantCode()),"非本租户下的用户无权操作");
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),u.getTenantCode()),"非本租户下的用户无权操作");
 			}
 			if (!operator.getRole().equals(RoleEnum.SUPER_ADMIN)) {
 				Preconditions.checkState(u.getRole().getValue() > operator.getRole().getValue(), "无权限跟新该角色用户");

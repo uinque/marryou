@@ -127,7 +127,7 @@ public class DeliveryController {
 			Preconditions.checkNotNull(product, "查无对应产品数据");
 			DeliveryOrderEntity d = new DeliveryOrderEntity();
 			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "level", "status", "standards");
-			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.randomInt(100));
+			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.getRandom(2));
 			d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
 			d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
 			d.setLevel(LevelEnum.getEnum(delivery.getLevel()));

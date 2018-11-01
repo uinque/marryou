@@ -1,6 +1,7 @@
 package com.marryou.commons.utils;
 
 import java.security.SecureRandom;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -38,6 +39,20 @@ public class RandomUtils {
      */
     public static int randomInt(int max) {
         return random.nextInt(max);
+    }
+
+    /**
+     * 获取指定位数的随机数
+     * @param length
+     * @return
+     */
+    public static String getRandom(int length) {
+        String val = "";
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            val += String.valueOf(random.nextInt(10));
+        }
+        return val;
     }
 
 }
