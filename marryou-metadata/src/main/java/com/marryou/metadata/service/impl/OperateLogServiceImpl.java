@@ -1,4 +1,4 @@
-package com.marryou.service.impl;
+package com.marryou.metadata.service.impl;
 
 
 import com.google.common.base.Preconditions;
@@ -9,7 +9,7 @@ import com.marryou.metadata.dto.LogDto;
 import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
-import com.marryou.service.OperateLogService;
+import com.marryou.metadata.service.OperateLogService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

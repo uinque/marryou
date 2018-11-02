@@ -1,4 +1,4 @@
-package com.marryou.service.impl;
+package com.marryou.metadata.service.impl;
 
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.metadata.dao.TenantDao;
@@ -8,8 +8,8 @@ import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.persistence.SearchFilters;
 import com.marryou.metadata.persistence.Searcher;
-import com.marryou.service.OperateLogService;
-import com.marryou.service.TenantService;
+import com.marryou.metadata.service.OperateLogService;
+import com.marryou.metadata.service.TenantService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

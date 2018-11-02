@@ -1,8 +1,8 @@
-package com.marryou.service.impl;
+package com.marryou.metadata.service.impl;
 
 import com.marryou.metadata.dao.BaseDao;
 import com.marryou.metadata.entity.base.BaseEntity;
-import com.marryou.service.BaseService;
+import com.marryou.metadata.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,11 +1,12 @@
-package com.marryou.service;
+package com.marryou.metadata.service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import com.marryou.metadata.dao.CompanyDao;
 import com.marryou.metadata.dto.CompanyDto;
 import com.marryou.metadata.entity.CompanyEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 /**
  * @author Administrator
@@ -19,5 +20,5 @@ public interface CompanyService extends BaseService<CompanyEntity, CompanyDao> {
 
 	void deleteCompany(CompanyEntity company, String logContent, OperateTypeEnum type, String operate);
 
-	CompanyEntity findCompanyByCompanyName(String companyName,String tenantCode);
+	CompanyEntity findCompanyByCompanyName(String companyName, String tenantCode);
 }

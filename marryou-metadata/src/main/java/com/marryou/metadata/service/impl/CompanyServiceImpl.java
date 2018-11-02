@@ -1,4 +1,4 @@
-package com.marryou.service.impl;
+package com.marryou.metadata.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -13,15 +13,14 @@ import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.StatusEnum;
 import com.marryou.metadata.persistence.SearchFilters;
 import com.marryou.metadata.persistence.Searcher;
-import com.marryou.service.CompanyService;
-import com.marryou.service.OperateLogService;
+import com.marryou.metadata.service.CompanyService;
+import com.marryou.metadata.service.OperateLogService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;

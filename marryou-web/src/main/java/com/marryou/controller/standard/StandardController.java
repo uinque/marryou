@@ -1,16 +1,22 @@
 package com.marryou.controller.standard;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.common.base.Preconditions;
 import com.marryou.commons.utils.base.BUtils;
+import com.marryou.dto.response.BaseResponse;
 import com.marryou.metadata.dto.StandardDto;
+import com.marryou.metadata.entity.ProductEntity;
+import com.marryou.metadata.entity.StandardEntity;
+import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
-import com.marryou.service.StandardService;
+import com.marryou.metadata.enums.RoleEnum;
+import com.marryou.metadata.service.ProductService;
+import com.marryou.metadata.service.StandardService;
+import com.marryou.metadata.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,17 +28,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.base.Preconditions;
-import com.marryou.dto.response.BaseResponse;
-import com.marryou.metadata.entity.ProductEntity;
-import com.marryou.metadata.entity.StandardEntity;
-import com.marryou.metadata.entity.UserEntity;
-import com.marryou.metadata.enums.RoleEnum;
-import com.marryou.service.ProductService;
-import com.marryou.service.UserService;
-
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * Created by linhy on 2018/6/6.

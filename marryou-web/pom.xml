@@ -27,8 +27,13 @@
     <dependencies>
         <dependency>
             <groupId>com.marryou</groupId>
-            <artifactId>marryou-service</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>marryou-commons-web</artifactId>
+            <version>${marryou.commons.web.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.marryou</groupId>
+            <artifactId>marryou-metadata</artifactId>
+            <version>${marryou.metadata.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

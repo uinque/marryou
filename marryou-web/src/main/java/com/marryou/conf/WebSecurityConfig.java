@@ -3,7 +3,7 @@ package com.marryou.conf;
 import com.marryou.commons.utils.json.GsonUtils;
 import com.marryou.dto.CheckResult;
 import com.marryou.dto.response.BaseResponse;
-import com.marryou.service.RedisService;
+import com.marryou.metadata.service.RedisService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import org.apache.commons.lang3.StringUtils;
