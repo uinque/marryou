@@ -1,6 +1,6 @@
-package com.marryou.service.impl;
+package com.marryou.metadata.service.impl;
 
-import com.marryou.service.RedisService;
+import com.marryou.metadata.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * Created by linhy on 2018/6/21.

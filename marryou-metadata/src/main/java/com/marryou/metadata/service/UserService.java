@@ -1,11 +1,12 @@
-package com.marryou.service;
+package com.marryou.metadata.service;
 
-import com.marryou.metadata.dto.UserSearchDto;
-import com.marryou.metadata.entity.UserEntity;
-import com.marryou.metadata.dao.UserDao;
-import com.marryou.metadata.enums.OperateTypeEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import com.marryou.metadata.dao.UserDao;
+import com.marryou.metadata.dto.UserSearchDto;
+import com.marryou.metadata.entity.UserEntity;
+import com.marryou.metadata.enums.OperateTypeEnum;
 
 /**
  * @author Administrator

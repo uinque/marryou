@@ -1,4 +1,4 @@
-package com.marryou.service;
+package com.marryou.metadata.service;
 
 import java.util.List;
 import java.util.Set;
@@ -26,15 +26,15 @@ public interface RedisService {
 
     public Object hmGet(String key, Object hashKey);
 
-    public void lPush(String k,Object v);
+    public void lPush(String k, Object v);
 
     public List<Object> lRange(String k, long l, long l1);
 
-    public void add(String key,Object value);
+    public void add(String key, Object value);
 
     public Set<Object> setMembers(String key);
 
-    public void zAdd(String key,Object value,double scoure);
+    public void zAdd(String key, Object value, double scoure);
 
     public Set<Object> rangeByScore(String key, double scoure, double scoure1);
 }

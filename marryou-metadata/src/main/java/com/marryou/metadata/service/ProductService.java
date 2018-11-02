@@ -1,10 +1,10 @@
-package com.marryou.service;
+package com.marryou.metadata.service;
+
+import java.util.List;
 
 import com.marryou.metadata.dao.ProductDao;
 import com.marryou.metadata.entity.ProductEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
-
-import java.util.List;
 
 /**
  * @author Administrator

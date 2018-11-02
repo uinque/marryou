@@ -1,4 +1,4 @@
-package com.marryou.service;
+package com.marryou.metadata.service;
 
 import com.marryou.metadata.dao.BaseDao;
 import com.marryou.metadata.entity.base.BaseEntity;
@@ -98,7 +98,7 @@ public interface BaseService<T extends BaseEntity,Dao extends BaseDao<T>> {
     public void delete(Iterable<? extends T> entities);
 
     /**
-     * Returns a single entity matching the given {@link org.springframework.data.jpa.domain.Specification}.
+     * Returns a single entity matching the given {@link Specification}.
      *
      * @param spec
      * @return

@@ -1,4 +1,4 @@
-package com.marryou.service;
+package com.marryou.metadata.service;
 
 import com.marryou.metadata.dao.TenantDao;
 import com.marryou.metadata.entity.TenantEntity;
