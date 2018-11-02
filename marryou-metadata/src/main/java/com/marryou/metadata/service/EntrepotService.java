@@ -1,4 +1,4 @@
-package com.marryou.service;
+package com.marryou.metadata.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
