@@ -63,7 +63,7 @@ public class DeliveryDto implements Serializable {
     /**
      * 仓库名称
      */
-    private Long entrepotName;
+    private String entrepotName;
     /**
      * 皮重
      */
@@ -91,7 +91,7 @@ public class DeliveryDto implements Serializable {
     /**
      * 装车时间
      */
-    private Date loadingTime;
+    private String loadingTime;
     /**
      * 批次号
      */
@@ -369,19 +369,19 @@ public class DeliveryDto implements Serializable {
         this.entrepotId = entrepotId;
     }
 
-    public Long getEntrepotName() {
+    public String getEntrepotName() {
         return entrepotName;
     }
 
-    public void setEntrepotName(Long entrepotName) {
+    public void setEntrepotName(String entrepotName) {
         this.entrepotName = entrepotName;
     }
 
-    public Date getLoadingTime() {
+    public String getLoadingTime() {
         return loadingTime;
     }
 
-    public void setLoadingTime(Date loadingTime) {
+    public void setLoadingTime(String loadingTime) {
         this.loadingTime = loadingTime;
     }
 

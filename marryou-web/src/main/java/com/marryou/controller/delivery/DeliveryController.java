@@ -19,6 +19,7 @@ import com.marryou.metadata.dto.StandardParamsDto;
 import com.marryou.metadata.entity.CompanyEntity;
 import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.DeliveryStandardEntity;
+import com.marryou.metadata.entity.EntrepotEntity;
 import com.marryou.metadata.entity.ManufacturerEntity;
 import com.marryou.metadata.entity.ProductEntity;
 import com.marryou.metadata.entity.StandardEntity;
@@ -31,6 +32,7 @@ import com.marryou.metadata.enums.StatusEnum;
 import com.marryou.metadata.enums.TechnoEnum;
 import com.marryou.metadata.service.CompanyService;
 import com.marryou.metadata.service.DeliveryService;
+import com.marryou.metadata.service.EntrepotService;
 import com.marryou.metadata.service.ManufacturerService;
 import com.marryou.metadata.service.ProductService;
 import com.marryou.metadata.service.StandardService;
@@ -92,6 +94,8 @@ public class DeliveryController {
 	private CompanyService companyService;
 	@Autowired
 	private TenantService tenantService;
+	@Autowired
+	private EntrepotService entrepotService;
 
 	@ApiOperation(value = "创建出库单", notes = "提交出库单数据")
 	@ApiImplicitParam(name = "delivery", value = "出库单信息", required = true, dataType = "Object")
@@ -108,8 +112,9 @@ public class DeliveryController {
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getAuditor()), "审核员为null");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getDistributorName()), "客户名称为null");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getSupplierName()), "生厂商名称为null");
-			Preconditions.checkNotNull(delivery.getDeliveryTime(), "生产日期为null");
-			Preconditions.checkNotNull(delivery.getOutTime(), "出厂日期为null");
+			Preconditions.checkState(StringUtils.isNotBlank(delivery.getDeliveryTime()), "生产日期为null");
+			Preconditions.checkState(StringUtils.isNotBlank(delivery.getOutTime()), "出厂日期为null");
+			Preconditions.checkState(StringUtils.isNotBlank(delivery.getLoadingTime()), "装车时间为null");
 			Preconditions.checkNotNull(delivery.getDistributorId(), "客户null");
 			Preconditions.checkNotNull(delivery.getSupplierId(), "生厂商为null");
 			Preconditions.checkNotNull(delivery.getProductId(), "产品为null");
@@ -118,15 +123,18 @@ public class DeliveryController {
 			Preconditions.checkNotNull(delivery.getTareWeight(), "皮重为null");
 			Preconditions.checkNotNull(delivery.getProductId(), "产品id为null");
 			Preconditions.checkNotNull(delivery.getEntrepotId(), "仓库id为null");
-			Preconditions.checkNotNull(delivery.getLoadingTime(), "装车时间为null");
 			Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
 			ProductEntity product = productService.findOne(delivery.getProductId());
 			Preconditions.checkNotNull(product, "查无对应产品数据");
+			EntrepotEntity entrepot = entrepotService.findOne(delivery.getEntrepotId());
+			Preconditions.checkNotNull(entrepot,"查无对应仓库信息");
 			DeliveryOrderEntity d = new DeliveryOrderEntity();
 			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "level", "status", "standards");
 			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.getRandom(2));
 			d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
 			d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
+			d.setLoadingTime(DateUtils.convertToDateTime(delivery.getLoadingTime()));
+			d.setEntrepotName(entrepot.getName());
 			d.setLevel(LevelEnum.getEnum(delivery.getLevel()));
 			d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
 			d.setRemark(product.getRemark());
@@ -362,7 +370,8 @@ public class DeliveryController {
 			Preconditions.checkNotNull(mft, "查无对应生产商数据");
 			CompanyEntity company = companyService.findOne(delivery.getDistributorId());
 			Preconditions.checkNotNull(company, "查无对应公司数据");
-
+			EntrepotEntity entrepot = entrepotService.findOne(delivery.getEntrepotId());
+			Preconditions.checkNotNull(entrepot,"查无对应仓库信息");
 			Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
 			DeliveryOrderEntity d = deliveryService.findOne(delivery.getId());
 			Preconditions.checkNotNull(d, "查无对应出库单单据");
@@ -373,12 +382,16 @@ public class DeliveryController {
 					"standards");
 			d.setDistributorName(company.getName());
 			d.setProductName(product.getName());
+			d.setEntrepotName(entrepot.getName());
 			d.setSupplierName(mft.getName());
 			if (StringUtils.isNotBlank(delivery.getDeliveryTime())) {
 				d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
 			}
 			if (StringUtils.isNotBlank(delivery.getOutTime())) {
 				d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
+			}
+			if (StringUtils.isNotBlank(delivery.getLoadingTime())) {
+				d.setOutTime(DateUtils.convertToDateTime(delivery.getLoadingTime()));
 			}
 			if (null != delivery.getLevel()) {
 				d.setLevel(LevelEnum.getEnum(delivery.getLevel()));

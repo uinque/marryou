@@ -59,7 +59,7 @@ public class DeliveryInfoDto{
     /**
      * 仓库名称
      */
-    private Long entrepotName;
+    private String entrepotName;
     /**
      * 皮重
      */
@@ -374,6 +374,30 @@ public class DeliveryInfoDto{
 
     public void setModifyBy(String modifyBy) {
         this.modifyBy = modifyBy;
+    }
+
+    public Long getEntrepotId() {
+        return entrepotId;
+    }
+
+    public void setEntrepotId(Long entrepotId) {
+        this.entrepotId = entrepotId;
+    }
+
+    public String getEntrepotName() {
+        return entrepotName;
+    }
+
+    public void setEntrepotName(String entrepotName) {
+        this.entrepotName = entrepotName;
+    }
+
+    public Date getLoadingTime() {
+        return loadingTime;
+    }
+
+    public void setLoadingTime(Date loadingTime) {
+        this.loadingTime = loadingTime;
     }
 
     public List<StandardParamsDto> getStandards() {

@@ -80,7 +80,7 @@ public class DeliveryOrderEntity extends BaseEntity {
     /**
      * 仓库名称
      */
-    private Long entrepotName;
+    private String entrepotName;
     /**
      * 皮重
      */
@@ -250,11 +250,11 @@ public class DeliveryOrderEntity extends BaseEntity {
     }
 
     @Column(name = "entrepot_name")
-    public Long getEntrepotName() {
+    public String getEntrepotName() {
         return entrepotName;
     }
 
-    public void setEntrepotName(Long entrepotName) {
+    public void setEntrepotName(String entrepotName) {
         this.entrepotName = entrepotName;
     }
 
