@@ -10,17 +10,20 @@ import com.marryou.metadata.dto.UserSearchDto;
 import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.DeliveryStandardEntity;
 import com.marryou.metadata.service.DeliveryService;
+import com.marryou.metadata.service.QrCodeService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +38,8 @@ public class QrcodeController {
 
 	@Autowired
 	private DeliveryService deliveryService;
-
+	@Autowired
+	private QrCodeService qrCodeService;
 
 	@ApiOperation(value = "二维码查询", notes = "二维码扫描后获取出库单单据")
 	@PostMapping("/delivery/{id}")
@@ -58,6 +62,19 @@ public class QrcodeController {
 			info.setStatus(delivery.getStatus().getValue());
 			info.setStandards(params);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success", info);
+		} catch (Exception e) {
+			logger.info("获取出库单据失败",e);
+			return new BaseResponse<UserSearchDto>(BaseResponse.CODE_FAILED, e.getMessage());
+		}
+
+	}
+
+	@ApiOperation(value = "根据出库单批量生成二维码，上传OSS", notes = "用于批量补充二维码数据")
+	@GetMapping("/batch")
+	public @ResponseBody BaseResponse batch(HttpServletRequest request) {
+		try {
+			qrCodeService.batchCreateQrCode();
+			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success");
 		} catch (Exception e) {
 			logger.info("获取出库单据失败",e);
 			return new BaseResponse<UserSearchDto>(BaseResponse.CODE_FAILED, e.getMessage());
