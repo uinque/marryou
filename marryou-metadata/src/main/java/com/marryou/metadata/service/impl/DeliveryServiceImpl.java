@@ -19,6 +19,7 @@ import com.marryou.metadata.enums.StatusEnum;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.DeliveryStandardService;
 import com.marryou.metadata.service.OperateLogService;
+import com.marryou.metadata.service.ailiyun.OSSService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,8 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 	private OperateLogService operateLogService;
 	@Autowired
 	private DeliveryStandardService deliveryStandardService;
+	@Autowired
+	private OSSService ossService;
 
 	@Override
 	public Page<DeliveryOrderEntity> findDeliveryOrders(PageRequest pageRequest, DeliveryDto search) {
@@ -252,14 +255,15 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 		//生成二维码图片
 		try {
 			String content = baseUrl + "/scanResult/" + d.getId();
-			String fileName = d.getId() + ".jpg";
 			String tenantCode = deliveryOrder.getTenantCode();
 			String yyyyMM = DateUtils.formatDate(DateUtils.getCurrentDateTime(), "yyyyMM");
+			String fileName = tenantCode + "_" + d.getId() + ".jpg";
 			String imgUrl = middleUrl + "/" + tenantCode + "/" + yyyyMM + "/" + fileName;
 			boolean ans = QrCodeGenWrapper.of(content).setW(300).setDrawBgColor(0xffffffff).setPadding(0)
 					.setLogoStyle(QrCodeOptions.LogoStyle.ROUND).asFile(imgUrl);
 			Preconditions.checkState(ans, "生成二维码图片失败");
-			d.setQrcodeUrl(imgUrl);
+			String url = ossService.uploadFileAndDeleteLocalFile(fileName, imgUrl);
+			d.setQrcodeUrl(url);
 		} catch (Exception e) {
 			logger.info("生成二维码图片异常", e);
 			throw new RuntimeException("生成二维码图片异常", e);
