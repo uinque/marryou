@@ -401,6 +401,7 @@ public class DeliveryController {
 							s.getStandardName(), s.getParameter());
 					standardEntity.setCreateTime(new Date());
 					standardEntity.setCreateBy(loginName);
+					standardEntity.setTenantCode(d.getTenantCode());
 					needAdd.add(standardEntity);
 				} else {
 					needUpdateMap.put(s.getId(), s);
@@ -413,6 +414,7 @@ public class DeliveryController {
 					if(StringUtils.isBlank(sdto.getParameter())){
 						ds.setParameter(null);
 					}
+					ds.setTenantCode(d.getTenantCode());
 					ds.setModifyBy(loginName);
 					ds.setModifyTime(new Date());
 					needUpdate.add(ds);
