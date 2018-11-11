@@ -49,7 +49,7 @@ public class EntrepotServiceImpl extends AbsBaseService<EntrepotEntity, Entrepot
 				Path<Long> id = root.get("id");
 				Path<String> name = root.get("name");
 				Path<StatusEnum> status = root.get("status");
-				Path<Date> createTime = root.get("createTime");
+				Path<String> tenantCode = root.get("tenantCode");
 				if (null != search) {
 					if (null != search.getId()) {
 						where.add(cb.and(cb.equal(id, search.getId())));
@@ -59,6 +59,9 @@ public class EntrepotServiceImpl extends AbsBaseService<EntrepotEntity, Entrepot
 					}
 					if (null != search.getStatus()) {
 						where.add(cb.and(cb.equal(status, StatusEnum.getEnum(search.getStatus()))));
+					}
+					if (null != search.getTenantCode()) {
+						where.add(cb.and(cb.equal(tenantCode, search.getTenantCode())));
 					}
 				}
 				query.where(where.toArray(new Predicate[] {}));
