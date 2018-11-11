@@ -23,6 +23,7 @@ import com.marryou.metadata.service.EntrepotService;
 import com.marryou.metadata.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
+import com.marryou.utils.RoleUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -124,11 +125,17 @@ public class EntrepotController {
 	@ApiOperation(value = "有效仓库列表", notes = "获取有效仓库列表数据")
 	@ApiImplicitParam(name = "search", value = "查询仓库信息", required = false, dataType = "Object")
 	@PostMapping("/listAll")
-	public @ResponseBody BaseResponse<List<EntrepotDto>> listAll() {
+	public @ResponseBody BaseResponse<List<EntrepotDto>> listAll(HttpServletRequest request) {
 		try {
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
 			List<EntrepotDto> list = Lists.newArrayList();
 			SearchFilters searchFilters = new SearchFilters();
 			searchFilters.add(Searcher.eq("status", StatusEnum.EFFECTIVE.getValue()));
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				searchFilters.add(Searcher.eq("tenantCode", operator.getTenantCode()));
+			}
 			List<EntrepotEntity> entrepotEntities = entrepotService.findAll(searchFilters);
 			if(Collections3.isNotEmpty(entrepotEntities)){
 				list = entrepotEntities.stream().map(c -> {
@@ -148,9 +155,18 @@ public class EntrepotController {
 	@ApiOperation(value = "仓库列表", notes = "获取仓库列表数据")
 	@ApiImplicitParam(name = "search", value = "查询仓库信息", required = false, dataType = "Object")
 	@PostMapping("/list")
-	public @ResponseBody BaseResponse<PageResponse<EntrepotDto>> list(@RequestBody BasePageRequest<EntrepotDto> search) {
+	public @ResponseBody BaseResponse<PageResponse<EntrepotDto>> list(@RequestBody BasePageRequest<EntrepotDto> search,HttpServletRequest request) {
 		try {
+			String token = request.getHeader(Constants.TOKEN_FIELD);
+			String loginName = JwtUtils.parseJWT(token).getSubject();
+			UserEntity operator = userService.getUserByLoginName(loginName);
 			Preconditions.checkNotNull(search, "查询参数异常");
+			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+				if(null==search.getParams()){
+					search.setParams(new EntrepotDto());
+				}
+				search.getParams().setTenantCode(operator.getTenantCode());
+			}
 			Page<EntrepotEntity> page = entrepotService.findEntrepots(search.toPageRequest(), search.getParams());
 			List<EntrepotDto> list = Lists.newArrayList();
 			if (Collections3.isNotEmpty(page.getContent())) {
