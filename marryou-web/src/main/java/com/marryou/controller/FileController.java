@@ -1,24 +1,26 @@
 package com.marryou.controller;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.google.common.base.Preconditions;
 import com.marryou.commons.utils.base.FileUtil;
+import com.marryou.commons.utils.collections.Collections3;
+import com.marryou.commons.utils.time.DateUtils;
 import com.marryou.dto.request.BasePageRequest;
+import com.marryou.dto.response.BaseResponse;
 import com.marryou.metadata.dto.DeliveryDto;
 import com.marryou.metadata.dto.DeliveryExportDto;
+import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.OperateLogEntity;
 import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.RoleEnum;
 import com.marryou.metadata.enums.StatusEnum;
+import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.OperateLogService;
 import com.marryou.metadata.service.UserService;
-import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,21 +29,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.base.Preconditions;
-import com.marryou.commons.utils.collections.Collections3;
-import com.marryou.dto.response.BaseResponse;
-import com.marryou.metadata.entity.DeliveryOrderEntity;
-import com.marryou.metadata.service.DeliveryService;
-
-import io.swagger.annotations.ApiOperation;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by linhy on 2018/6/3.
@@ -63,12 +59,12 @@ public class FileController {
 	@GetMapping("/delivery/export")
 	public @ResponseBody BaseResponse exportDelivery(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value = "startTime", required = false) String startTime,
-			@RequestParam(value = "endTime", required = false) String endTime) {
+			@RequestParam(value = "endTime", required = false) String endTime,
+			@RequestParam(value = "token", required = true) String token) {
 		BasePageRequest<DeliveryDto> search = new BasePageRequest<>();
 		DeliveryDto params = new DeliveryDto();
 		search.setParams(params);
 		try {
-			String token = request.getHeader(Constants.TOKEN_FIELD);
 			String loginName = JwtUtils.parseJWT(token).getSubject();
 			UserEntity operator = userService.getUserByLoginName(loginName);
 			Preconditions.checkNotNull(operator, "操作用户异常");
@@ -78,12 +74,13 @@ public class FileController {
 				}
 				search.getParams().setTenantCode(operator.getTenantCode());
 			}
-			Preconditions.checkNotNull(search, "查询参数异常");
 			search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
-			if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
-				search.getParams().setStartTime(startTime);
-				search.getParams().setEndTime(endTime);
+			if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
+				startTime = DateUtils.formatDate(DateUtils.getMonthStart(new Date()), "yyyy-MM-dd HH:mm:ss");
+				endTime = DateUtils.formatDate(DateUtils.getMonthEnd(new Date()), "yyyy-MM-dd HH:mm:ss");
 			}
+			search.getParams().setStartTime(startTime);
+			search.getParams().setEndTime(endTime);
 			//TODO 不需要分页查询改造
 			search.setPageIndex(0);
 			search.setPageSize(100000);
