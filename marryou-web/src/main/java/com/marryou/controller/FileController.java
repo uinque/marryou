@@ -3,6 +3,7 @@ package com.marryou.controller;
 import com.google.common.base.Preconditions;
 import com.marryou.commons.utils.base.FileUtil;
 import com.marryou.commons.utils.collections.Collections3;
+import com.marryou.commons.utils.time.DateUtils;
 import com.marryou.dto.request.BasePageRequest;
 import com.marryou.dto.response.BaseResponse;
 import com.marryou.metadata.dto.DeliveryDto;
@@ -17,7 +18,6 @@ import com.marryou.metadata.enums.StatusEnum;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.OperateLogService;
 import com.marryou.metadata.service.UserService;
-import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
 import io.swagger.annotations.ApiOperation;
@@ -58,13 +58,13 @@ public class FileController {
 	@ApiOperation(value = "出库单导出", notes = "按时间导出出库单数据")
 	@GetMapping("/delivery/export")
 	public @ResponseBody BaseResponse exportDelivery(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(value = "startTime", required = false) String startTime,
-			@RequestParam(value = "endTime", required = false) String endTime) {
+													 @RequestParam(value = "startTime", required = false) String startTime,
+													 @RequestParam(value = "endTime", required = false) String endTime,
+													 @RequestParam(value = "token", required = true) String token) {
 		BasePageRequest<DeliveryDto> search = new BasePageRequest<>();
 		DeliveryDto params = new DeliveryDto();
 		search.setParams(params);
 		try {
-			String token = request.getHeader(Constants.TOKEN_FIELD);
 			String loginName = JwtUtils.parseJWT(token).getSubject();
 			UserEntity operator = userService.getUserByLoginName(loginName);
 			Preconditions.checkNotNull(operator, "操作用户异常");
@@ -74,12 +74,13 @@ public class FileController {
 				}
 				search.getParams().setTenantCode(operator.getTenantCode());
 			}
-			Preconditions.checkNotNull(search, "查询参数异常");
 			search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
-			if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
-				search.getParams().setStartTime(startTime);
-				search.getParams().setEndTime(endTime);
+			if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
+				startTime = DateUtils.formatDate(DateUtils.getMonthStart(new Date()), "yyyy-MM-dd HH:mm:ss");
+				endTime = DateUtils.formatDate(DateUtils.getMonthEnd(new Date()), "yyyy-MM-dd HH:mm:ss");
 			}
+			search.getParams().setStartTime(startTime);
+			search.getParams().setEndTime(endTime);
 			//TODO 不需要分页查询改造
 			search.setPageIndex(0);
 			search.setPageSize(100000);
