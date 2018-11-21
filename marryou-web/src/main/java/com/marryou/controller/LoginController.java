@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +36,9 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+	@Value("${campany}")
+	private String campany;
 
 	@Autowired
 	private UserService userService;
@@ -62,7 +66,7 @@ public class LoginController {
 			Preconditions.checkState(StringUtils.equals(userDto.getPassword(), user.getPassword()), "用户名与密码不匹配");
 			//把token返回给客户端-->客户端保存至cookie-->客户端每次请求附带cookie参数
 			String jwt = JwtUtils.createJWT(user.getId().toString(), user.getLoginName(), Constants.JWT_TTL);
-			if(redisService.set(user.getLoginName(), jwt, Constants.REDIS_EXPIRE)){
+			if(redisService.set(campany + "_" + user.getLoginName(), jwt, Constants.REDIS_EXPIRE)){
 				UserSearchDto u = new UserSearchDto();
 				BeanUtils.copyProperties(user, u,"password");
 				u.setRole(user.getRole().getValue());
@@ -83,7 +87,7 @@ public class LoginController {
 			Claims claims = JwtUtils.parseJWT(token);
 			//logger.info("---当前用户:{},注销登录---", claims.getSubject());
 			//删除缓存中的token
-			redisService.remove(claims.getSubject());
+			redisService.remove(campany + "_" + claims.getSubject());
 			return new BaseResponse<UserSearchDto>(BaseResponse.CODE_SUCCESS, "success");
 		} catch (Exception e) {
 			logger.info("注销失败",e);

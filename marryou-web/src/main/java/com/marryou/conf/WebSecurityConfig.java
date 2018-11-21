@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -82,6 +83,10 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
 
 	private class SecurityInterceptor extends HandlerInterceptorAdapter {
 
+
+		@Value("${campany}")
+		private String campany;
+
 		@Autowired
 		private RedisService redisService;
 
@@ -106,7 +111,7 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
 			if (StringUtils.isNotBlank(token)) {
 				CheckResult checkResult = JwtUtils.validateJWT(token);
 				if (checkResult.isSuccess()) {
-					String cacheKey = checkResult.getClaims().getSubject();
+					String cacheKey = campany + "_" + checkResult.getClaims().getSubject();
 					//缓存中查询是否有存在token
 					String cacheVal = (String) redisService.get(cacheKey);
 					if (StringUtils.isNotBlank(cacheVal)) {
