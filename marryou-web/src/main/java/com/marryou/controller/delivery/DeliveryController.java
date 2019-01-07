@@ -108,8 +108,8 @@ public class DeliveryController {
 			Preconditions.checkNotNull(operator, "操作用户异常");
 			Preconditions.checkState(operator.getRole().getValue() < RoleEnum.MEMBER.getValue(), "无权限创建出库单据");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getCarNo()), "车牌为null");
-			Preconditions.checkState(StringUtils.isNotBlank(delivery.getChecker()), "检验员为null");
-			Preconditions.checkState(StringUtils.isNotBlank(delivery.getAuditor()), "审核员为null");
+			//Preconditions.checkState(StringUtils.isNotBlank(delivery.getChecker()), "检验员为null");
+			//Preconditions.checkState(StringUtils.isNotBlank(delivery.getAuditor()), "审核员为null");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getDistributorName()), "客户名称为null");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getSupplierName()), "生厂商名称为null");
 			Preconditions.checkState(StringUtils.isNotBlank(delivery.getDeliveryTime()), "生产日期为null");
@@ -118,19 +118,21 @@ public class DeliveryController {
 			Preconditions.checkNotNull(delivery.getDistributorId(), "客户null");
 			Preconditions.checkNotNull(delivery.getSupplierId(), "生厂商为null");
 			Preconditions.checkNotNull(delivery.getProductId(), "产品为null");
-			Preconditions.checkNotNull(delivery.getGrossWeight(), "毛重为null");
-			Preconditions.checkNotNull(delivery.getNetWeight(), "净重为null");
-			Preconditions.checkNotNull(delivery.getTareWeight(), "皮重为null");
+			//			Preconditions.checkNotNull(delivery.getGrossWeight(), "毛重为null");
+			//			Preconditions.checkNotNull(delivery.getNetWeight(), "净重为null");
+			//			Preconditions.checkNotNull(delivery.getTareWeight(), "皮重为null");
 			Preconditions.checkNotNull(delivery.getProductId(), "产品id为null");
 			Preconditions.checkNotNull(delivery.getEntrepotId(), "仓库id为null");
-			Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
+			if(LevelEnum.isNormal(delivery.getLevel())){
+				Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
+			}
 			ProductEntity product = productService.findOne(delivery.getProductId());
 			Preconditions.checkNotNull(product, "查无对应产品数据");
 			EntrepotEntity entrepot = entrepotService.findOne(delivery.getEntrepotId());
-			Preconditions.checkNotNull(entrepot,"查无对应仓库信息");
+			Preconditions.checkNotNull(entrepot, "查无对应仓库信息");
 			DeliveryOrderEntity d = new DeliveryOrderEntity();
 			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "level", "status", "standards");
-			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.getRandom(2));
+			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss") + RandomUtils.getRandom(2));
 			d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
 			d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
 			d.setLoadingTime(DateUtils.convertToDateTime(delivery.getLoadingTime()));
@@ -142,25 +144,27 @@ public class DeliveryController {
 			d.setTenantCode(operator.getTenantCode());
 			d.setCreateBy(loginName);
 			d.setCreateTime(new Date());
-			List<DeliveryStandardEntity> list = delivery.getStandards().stream().map(s -> {
-				StandardEntity standard = standardService.findOne(s.getStandardId());
-				Preconditions.checkNotNull(standard, "查无对应的产品标准值");
-				//Preconditions.checkState(StringUtils.isNotBlank(s.getParameter()), "产品标准值为null");
-				String value = "";
-				if(StringUtils.isNotBlank(s.getParameter())){
-					BigDecimal val = new BigDecimal(s.getParameter()).setScale(standard.getPointNum(),
-							BigDecimal.ROUND_HALF_DOWN);
-					value = val.toString();
-				}
-				DeliveryStandardEntity ds = new DeliveryStandardEntity(d, s.getStandardId(), s.getStandardName(),
-						value);
-				ds.setTenantCode(operator.getTenantCode());
-				ds.setCreateBy(loginName);
-				ds.setCreateTime(new Date());
-				ds.setDeliveryOrder(d);
-				return ds;
-			}).collect(Collectors.toList());
-			d.setStandards(list);
+			if(Collections3.isNotEmpty(delivery.getStandards())){
+				List<DeliveryStandardEntity> list = delivery.getStandards().stream().map(s -> {
+					StandardEntity standard = standardService.findOne(s.getStandardId());
+					Preconditions.checkNotNull(standard, "查无对应的产品标准值");
+					//Preconditions.checkState(StringUtils.isNotBlank(s.getParameter()), "产品标准值为null");
+					String value = "";
+					if (StringUtils.isNotBlank(s.getParameter())) {
+						BigDecimal val = new BigDecimal(s.getParameter()).setScale(standard.getPointNum(),
+								BigDecimal.ROUND_HALF_DOWN);
+						value = val.toString();
+					}
+					DeliveryStandardEntity ds = new DeliveryStandardEntity(d, s.getStandardId(), s.getStandardName(),
+							value);
+					ds.setTenantCode(operator.getTenantCode());
+					ds.setCreateBy(loginName);
+					ds.setCreateTime(new Date());
+					ds.setDeliveryOrder(d);
+					return ds;
+				}).collect(Collectors.toList());
+				d.setStandards(list);
+			}
 			deliveryService.createDeliverOrder(d);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "创建成功");
 		} catch (Exception e) {
@@ -185,8 +189,9 @@ public class DeliveryController {
 			DeliveryOrderEntity delivery = deliveryService.findOne(id);
 			Preconditions.checkNotNull(delivery, "查无该出库单数据");
 			Preconditions.checkState(operator.getRole().getValue() < RoleEnum.MEMBER.getValue(), "无权限失效/恢复该单据");
-			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
-				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),delivery.getTenantCode()),"非本租户下的出库单，无权操作");
+			if (!RoleUtils.isPlatformAdmin(operator.getTenantCode())) {
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(), delivery.getTenantCode()),
+						"非本租户下的出库单，无权操作");
 			}
 			delivery.setStatus(StatusEnum.getEnum(status));
 			delivery.setModifyBy(loginName);
@@ -223,25 +228,26 @@ public class DeliveryController {
 				}
 			}
 			TenantEntity tenant = tenantService.findByTenantCode(info.getTenantCode());
-			if(null!=tenant){
+			if (null != tenant) {
 				info.setAllowModifyOutTime(tenant.getModifyOutTimeFlag());
 			}
 			List<DeliveryStandardEntity> list = delivery.getStandards();
-			//Preconditions.checkState(Collections3.isNotEmpty(list), "查无对应出库单检验结果");
-			List<StandardParamsDto> params = list.stream().map(s -> {
-				StandardParamsDto dto = new StandardParamsDto();
-				BeanUtils.copyProperties(s, dto);
-				StandardEntity level = standardService.findOne(s.getStandardId());
-				if (null != level) {
-					dto.setPointNum(level.getPointNum());
-					dto.setOneLevel(level.getOneLevel());
-					dto.setTwoLevel(level.getTwoLevel());
-					dto.setThreeLevel(level.getThreeLevel());
-					dto.setType(level.getType());
-				}
-				return dto;
-			}).collect(Collectors.toList());
-			info.setStandards(params);
+			if(Collections3.isNotEmpty(list)){
+				List<StandardParamsDto> params = list.stream().map(s -> {
+					StandardParamsDto dto = new StandardParamsDto();
+					BeanUtils.copyProperties(s, dto);
+					StandardEntity level = standardService.findOne(s.getStandardId());
+					if (null != level) {
+						dto.setPointNum(level.getPointNum());
+						dto.setOneLevel(level.getOneLevel());
+						dto.setTwoLevel(level.getTwoLevel());
+						dto.setThreeLevel(level.getThreeLevel());
+						dto.setType(level.getType());
+					}
+					return dto;
+				}).collect(Collectors.toList());
+				info.setStandards(params);
+			}
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success", info);
 		} catch (Exception e) {
 			logger.info("获取出库单失败:{}", e.getMessage(), e);
@@ -259,7 +265,7 @@ public class DeliveryController {
 			PageRequest pageRequest = new PageRequest(0, 50, new Sort(Sort.Direction.DESC, "deliveryTime"));
 			DeliveryDto search = new DeliveryDto();
 			search.setStatus(StatusEnum.EFFECTIVE.getValue());
-			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+			if (!RoleUtils.isPlatformAdmin(operator.getTenantCode())) {
 				search.setTenantCode(operator.getTenantCode());
 			}
 			Page<DeliveryOrderEntity> page = deliveryService.findDeliveryOrders(pageRequest, search);
@@ -291,7 +297,7 @@ public class DeliveryController {
 			if (null == search.getParams()) {
 				search.setParams(new DeliveryDto());
 			}
-			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+			if (!RoleUtils.isPlatformAdmin(operator.getTenantCode())) {
 				if (operator.getRole().equals(RoleEnum.MEMBER)) {
 					search.getParams().setDistributorId(operator.getCompanyId());
 					search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
@@ -320,7 +326,7 @@ public class DeliveryController {
 			if (null == search.getParams()) {
 				search.setParams(new DeliveryDto());
 			}
-			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
+			if (!RoleUtils.isPlatformAdmin(operator.getTenantCode())) {
 				if (operator.getRole().equals(RoleEnum.MEMBER)) {
 					search.getParams().setDistributorId(operator.getCompanyId());
 					search.getParams().setStatus(StatusEnum.EFFECTIVE.getValue());
@@ -371,12 +377,13 @@ public class DeliveryController {
 			CompanyEntity company = companyService.findOne(delivery.getDistributorId());
 			Preconditions.checkNotNull(company, "查无对应公司数据");
 			EntrepotEntity entrepot = entrepotService.findOne(delivery.getEntrepotId());
-			Preconditions.checkNotNull(entrepot,"查无对应仓库信息");
+			Preconditions.checkNotNull(entrepot, "查无对应仓库信息");
 			Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
 			DeliveryOrderEntity d = deliveryService.findOne(delivery.getId());
 			Preconditions.checkNotNull(d, "查无对应出库单单据");
-			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
-				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),d.getTenantCode()),"非本租户下的出库单，无权操作");
+			if (!RoleUtils.isPlatformAdmin(operator.getTenantCode())) {
+				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(), d.getTenantCode()),
+						"非本租户下的出库单，无权操作");
 			}
 			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "level", "status", "qrcodeUrl",
 					"standards");
@@ -391,7 +398,7 @@ public class DeliveryController {
 				d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
 			}
 			if (StringUtils.isNotBlank(delivery.getLoadingTime())) {
-				d.setOutTime(DateUtils.convertToDateTime(delivery.getLoadingTime()));
+				d.setLoadingTime(DateUtils.convertToDateTime(delivery.getLoadingTime()));
 			}
 			if (null != delivery.getLevel()) {
 				d.setLevel(LevelEnum.getEnum(delivery.getLevel()));
@@ -399,39 +406,58 @@ public class DeliveryController {
 			if (null != delivery.getTechno()) {
 				d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
 			}
+			if(null==delivery.getGrossWeight()){
+				d.setGrossWeight(null);
+			}
+			if(null==delivery.getNetWeight()){
+				d.setNetWeight(null);
+			}
+			if(null==delivery.getTareWeight()){
+				d.setTareWeight(null);
+			}
+			if(StringUtils.isBlank(delivery.getChecker())){
+				d.setChecker(null);
+			}
+			if(StringUtils.isBlank(delivery.getAuditor())){
+				d.setAuditor(null);
+			}
 			d.setModifyBy(loginName);
 			d.setModifyTime(new Date());
 			List<DeliveryStandardEntity> needAdd = Lists.newArrayList();
 			List<DeliveryStandardEntity> needUpdate = Lists.newArrayList();
 			Map<Long, StandardParamsDto> needUpdateMap = Maps.newHashMap();
 			List<DeliveryStandardEntity> needDelete = Lists.newArrayList();
-			delivery.getStandards().forEach(s -> {
-				if (null == s.getId()) {
-					DeliveryStandardEntity standardEntity = new DeliveryStandardEntity(d, s.getStandardId(),
-							s.getStandardName(), s.getParameter());
-					standardEntity.setCreateTime(new Date());
-					standardEntity.setCreateBy(loginName);
-					standardEntity.setTenantCode(d.getTenantCode());
-					needAdd.add(standardEntity);
-				} else {
-					needUpdateMap.put(s.getId(), s);
-				}
-			});
-			d.getStandards().forEach(ds -> {
-				StandardParamsDto sdto = needUpdateMap.get(ds.getId());
-				if (null != sdto) {
-					BUtils.copyPropertiesIgnoreNull(sdto, ds, "id", "createTime", "createBy");
-					if(StringUtils.isBlank(sdto.getParameter())){
-						ds.setParameter(null);
+			if(Collections3.isNotEmpty(delivery.getStandards())){
+				delivery.getStandards().forEach(s -> {
+					if (null == s.getId()) {
+						DeliveryStandardEntity standardEntity = new DeliveryStandardEntity(d, s.getStandardId(),
+								s.getStandardName(), s.getParameter());
+						standardEntity.setCreateTime(new Date());
+						standardEntity.setCreateBy(loginName);
+						standardEntity.setTenantCode(d.getTenantCode());
+						needAdd.add(standardEntity);
+					} else {
+						needUpdateMap.put(s.getId(), s);
 					}
-					ds.setTenantCode(d.getTenantCode());
-					ds.setModifyBy(loginName);
-					ds.setModifyTime(new Date());
-					needUpdate.add(ds);
-				} else {
-					needDelete.add(ds);
-				}
-			});
+				});
+			}
+			if(Collections3.isNotEmpty(d.getStandards())){
+				d.getStandards().forEach(ds -> {
+					StandardParamsDto sdto = needUpdateMap.get(ds.getId());
+					if (null != sdto) {
+						BUtils.copyPropertiesIgnoreNull(sdto, ds, "id", "createTime", "createBy");
+						if (StringUtils.isBlank(sdto.getParameter())) {
+							ds.setParameter(null);
+						}
+						ds.setTenantCode(d.getTenantCode());
+						ds.setModifyBy(loginName);
+						ds.setModifyTime(new Date());
+						needUpdate.add(ds);
+					} else {
+						needDelete.add(ds);
+					}
+				});
+			}
 			logger.info("###更新出库单ID:{},需新增数据:{},更新数据:{},删除数据:{}条###", delivery.getId(), needAdd.size(),
 					needUpdate.size(), needDelete.size());
 			needUpdate.addAll(needAdd);

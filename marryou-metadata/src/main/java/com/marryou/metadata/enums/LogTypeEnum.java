@@ -11,7 +11,8 @@ public enum LogTypeEnum {
     DELIVERY(3, "出库单"),
     MANUFACTURE(4, "生厂商"),
     STANDARD(5, "标准"),
-    TENANT(6,"租户");
+    TENANT(6,"租户"),
+    WAREHOUSE(7,"入库单");
 
     private Integer value;
     private String text;

@@ -16,6 +16,7 @@ import com.marryou.metadata.enums.LevelEnum;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.StatusEnum;
+import com.marryou.metadata.enums.TechnoEnum;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.DeliveryStandardService;
 import com.marryou.metadata.service.OperateLogService;
@@ -239,9 +240,15 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 		if (Collections3.isNotEmpty(list)) {
 			totalRecords = Long.valueOf(list.size());
 			for (DeliveryOrderEntity s : list) {
-				sumTareWeight = sumTareWeight.add(s.getTareWeight());
-				sumGrossWeight = sumGrossWeight.add(s.getTareWeight());
-				sumNetweight = sumNetweight.add(s.getNetWeight());
+				if (null != s.getTareWeight()) {
+					sumTareWeight = sumTareWeight.add(s.getTareWeight());
+				}
+				if (null != s.getGrossWeight()) {
+					sumGrossWeight = sumGrossWeight.add(s.getGrossWeight());
+				}
+				if (null != s.getNetWeight()) {
+					sumNetweight = sumNetweight.add(s.getNetWeight());
+				}
 			}
 		}
 		return new DeliveryCountDto(sumTareWeight, sumGrossWeight, sumNetweight, totalRecords);
@@ -252,10 +259,19 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 	public void createDeliverOrder(DeliveryOrderEntity deliveryOrder) {
 		Preconditions.checkNotNull(deliveryOrder, "deliveryOrder为null");
 		DeliveryOrderEntity d = this.save(deliveryOrder);
+		if (LevelEnum.isNormal(d.getLevel().getValue())) {
+			this.createQrCodeUrl(d);
+			this.save(d);
+		}
+		operateLogService.save(new OperateLogEntity("创建出库单id:" + d.getId(), OperateTypeEnum.CREATE, d.getId(),
+				LogTypeEnum.DELIVERY, d.getCreateBy(), new Date(), d.getTenantCode()));
+	}
+
+	private void createQrCodeUrl(DeliveryOrderEntity d) {
 		//生成二维码图片
 		try {
 			String content = baseUrl + "/scanResult/" + d.getId();
-			String tenantCode = deliveryOrder.getTenantCode();
+			String tenantCode = d.getTenantCode();
 			String yyyyMM = DateUtils.formatDate(DateUtils.getCurrentDateTime(), "yyyyMM");
 			String fileName = tenantCode + "_" + d.getId() + ".jpg";
 			String imgUrl = middleUrl + "/" + tenantCode + "/" + yyyyMM + "/" + fileName;
@@ -268,15 +284,15 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 			logger.info("生成二维码图片异常", e);
 			throw new RuntimeException("生成二维码图片异常", e);
 		}
-		this.save(d);
-		operateLogService.save(new OperateLogEntity("创建出库单id:" + d.getId(), OperateTypeEnum.CREATE, d.getId(),
-				LogTypeEnum.DELIVERY, d.getCreateBy(), new Date(), d.getTenantCode()));
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void saveDelivery(DeliveryOrderEntity delivery, List<DeliveryStandardEntity> needDelete, String logContent,
 			OperateTypeEnum type, String operate) {
+		if (StringUtils.isBlank(delivery.getQrcodeUrl()) && LevelEnum.isNormal(delivery.getLevel().getValue())) {
+			this.createQrCodeUrl(delivery);
+		}
 		this.save(delivery);
 		if (Collections3.isNotEmpty(needDelete)) {
 			for (DeliveryStandardEntity d : needDelete) {

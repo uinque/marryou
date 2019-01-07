@@ -5,7 +5,11 @@ package com.marryou.metadata.enums;
  */
 public enum TechnoEnum {
 
-    SORTING(0,"分选");
+    SORTING(0,"分选"),
+    PROCESS_ONE(1,"加工灰(Ⅰ级)"),
+    PROCESS_TWO(2,"加工灰(Ⅱ级)"),
+    ORIGINAL(3,"原灰"),
+    OTHER(4,"其它");
 
     private Integer value;
     private String text;
