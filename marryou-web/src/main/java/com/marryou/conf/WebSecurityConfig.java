@@ -60,7 +60,8 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
 		//导出出库单路径
 		addInterceptor.excludePathPatterns("/api/file/delivery/**");
 		addInterceptor.excludePathPatterns("/api/loginSubmit/**");
-		//addInterceptor.excludePathPatterns("/api/login/**");
+		//数据迁移
+		addInterceptor.excludePathPatterns("/api/move/**");
 		addInterceptor.excludePathPatterns("/api/swagger**");
 
 		// 拦截配置

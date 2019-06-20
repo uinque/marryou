@@ -44,7 +44,26 @@ public class ProductEntity extends BaseEntity {
 
     private StatusEnum status;
 
-    private List<StandardEntity> standards;
+    /**
+     * 模板表格表头项目名称
+     */
+    private String headName;
+    /**
+     * 模板表格表头标题
+     */
+    private String headTitle;
+    /**
+     * 模板表格表头结果
+     */
+    private String headResult;
+    /**
+     * 模板表格底部名称
+     */
+    private String footName;
+    /**
+     * 模板表格底部内容
+     */
+    private String footContent;
 
     public ProductEntity() {
     }
@@ -103,14 +122,49 @@ public class ProductEntity extends BaseEntity {
         this.status = status;
     }
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "product")
-    @JsonIgnore
-    public List<StandardEntity> getStandards() {
-        return standards;
+    @Column(name = "head_name")
+    public String getHeadName() {
+        return headName;
     }
 
-    public void setStandards(List<StandardEntity> standards) {
-        this.standards = standards;
+    public void setHeadName(String headName) {
+        this.headName = headName;
+    }
+
+    @Column(name = "head_title")
+    public String getHeadTitle() {
+        return headTitle;
+    }
+
+    public void setHeadTitle(String headTitle) {
+        this.headTitle = headTitle;
+    }
+
+    @Column(name = "head_result")
+    public String getHeadResult() {
+        return headResult;
+    }
+
+    public void setHeadResult(String headResult) {
+        this.headResult = headResult;
+    }
+
+    @Column(name = "foot_name")
+    public String getFootName() {
+        return footName;
+    }
+
+    public void setFootName(String footName) {
+        this.footName = footName;
+    }
+
+    @Column(name = "foot_content")
+    public String getFootContent() {
+        return footContent;
+    }
+
+    public void setFootContent(String footContent) {
+        this.footContent = footContent;
     }
 
     @Override
@@ -121,7 +175,11 @@ public class ProductEntity extends BaseEntity {
                 ", printName='" + printName + '\'' +
                 ", remark='" + remark + '\'' +
                 ", status=" + status +
-                ", standards=" + standards +
+                ", headName='" + headName + '\'' +
+                ", headTitle='" + headTitle + '\'' +
+                ", headResult='" + headResult + '\'' +
+                ", footName='" + footName + '\'' +
+                ", footContent='" + footContent + '\'' +
                 "} " + super.toString();
     }
 }

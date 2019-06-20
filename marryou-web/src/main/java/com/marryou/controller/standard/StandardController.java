@@ -73,7 +73,7 @@ public class StandardController {
 			StandardEntity s = new StandardEntity();
 			BUtils.copyPropertiesIgnoreNull(standard, s);
 			s.setTenantCode(operator.getTenantCode());
-			s.setProduct(product);
+			s.setProductId(product.getId());
             s.setCreateBy(loginName);
             s.setCreateTime(new Date());
 			standardService.saveStandard(s,"新增标准数据", OperateTypeEnum.CREATE,loginName);

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface ProductService extends BaseService<ProductEntity, ProductDao> {
 
-	void updateProduct(ProductEntity product, List<Long> standardsIds, String logContent, OperateTypeEnum type, String operate);
+	void updateProduct(ProductEntity product, String logContent, OperateTypeEnum type, String operate);
 
 	void saveProduct(ProductEntity product, String logContent, OperateTypeEnum type, String operate);
 

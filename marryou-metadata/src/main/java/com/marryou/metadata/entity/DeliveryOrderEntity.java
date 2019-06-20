@@ -96,6 +96,10 @@ public class DeliveryOrderEntity extends BaseEntity {
      */
     private String auditor;
     /**
+     * 审批人
+     */
+    private String approver;
+    /**
      * 运输车牌
      */
     private String carNo;
@@ -107,6 +111,14 @@ public class DeliveryOrderEntity extends BaseEntity {
      * 级别 0=一级、1=二级、2=三级
      */
     private LevelEnum level;
+    /**
+     * 模板标准列标题ID
+     */
+    private Long columnId;
+    /**
+     * 模板标准列名称
+     */
+    private String columnTitle;
     /**
      * 工艺 0=分选
      */
@@ -127,6 +139,21 @@ public class DeliveryOrderEntity extends BaseEntity {
      * 状态
      */
     private StatusEnum status;
+
+    /**
+     * 灰源：0=麦特，1=嵩屿，2=后石
+     */
+    private String flyashSource;
+
+    /**
+     * 外部关联编号
+     */
+    private String relationCode;
+
+    /**
+     * 磅单号
+     */
+    private String poundCode;
 
     /**
      * 标准值
@@ -275,6 +302,15 @@ public class DeliveryOrderEntity extends BaseEntity {
         this.auditor = auditor;
     }
 
+    @Column(name = "approver")
+    public String getApprover() {
+        return approver;
+    }
+
+    public void setApprover(String approver) {
+        this.approver = approver;
+    }
+
     @Column(name = "car_no")
     public String getCarNo() {
         return carNo;
@@ -300,6 +336,24 @@ public class DeliveryOrderEntity extends BaseEntity {
 
     public void setLevel(LevelEnum level) {
         this.level = level;
+    }
+
+    @Column(name="column_id")
+    public Long getColumnId() {
+        return columnId;
+    }
+
+    public void setColumnId(Long columnId) {
+        this.columnId = columnId;
+    }
+
+    @Column(name="column_title")
+    public String getColumnTitle() {
+        return columnTitle;
+    }
+
+    public void setColumnTitle(String columnTitle) {
+        this.columnTitle = columnTitle;
     }
 
     @Column(name = "techno")
@@ -347,8 +401,35 @@ public class DeliveryOrderEntity extends BaseEntity {
         this.status = status;
     }
 
+    @Column(name = "flyash_source")
+    public String getFlyashSource() {
+        return flyashSource;
+    }
+
+    public void setFlyashSource(String flyashSource) {
+        this.flyashSource = flyashSource;
+    }
+
+    @Column(name = "relation_code")
+    public String getRelationCode() {
+        return relationCode;
+    }
+
+    public void setRelationCode(String relationCode) {
+        this.relationCode = relationCode;
+    }
+
+    @Column(name = "pound_code")
+    public String getPoundCode() {
+        return poundCode;
+    }
+
+    public void setPoundCode(String poundCode) {
+        this.poundCode = poundCode;
+    }
+
     @JsonIgnore
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY,mappedBy = "deliveryOrder")
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER,mappedBy = "deliveryOrder")
     public List<DeliveryStandardEntity> getStandards() {
         return standards;
     }
@@ -375,14 +456,20 @@ public class DeliveryOrderEntity extends BaseEntity {
                 ", netWeight=" + netWeight +
                 ", checker='" + checker + '\'' +
                 ", auditor='" + auditor + '\'' +
+                ", approver='" + approver + '\'' +
                 ", carNo='" + carNo + '\'' +
                 ", batchNo='" + batchNo + '\'' +
                 ", level=" + level +
+                ", columnId=" + columnId +
+                ", columnTitle='" + columnTitle + '\'' +
                 ", techno=" + techno +
                 ", qrcodeUrl='" + qrcodeUrl + '\'' +
                 ", title='" + title + '\'' +
                 ", remark='" + remark + '\'' +
                 ", status=" + status +
+                ", flyashSource='" + flyashSource + '\'' +
+                ", relationCode='" + relationCode + '\'' +
+                ", poundCode='" + poundCode + '\'' +
                 ", standards=" + standards +
                 "} " + super.toString();
     }

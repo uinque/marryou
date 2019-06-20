@@ -1,5 +1,7 @@
 package com.marryou.metadata.dto;
 
+import com.marryou.metadata.entity.TenantEntity;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +12,14 @@ import java.util.List;
 public class ProductDto implements Serializable {
 
     private static final long serialVersionUID = 1354959855351613003L;
+    /**
+     * 有数据
+     */
+    public static final Integer BEEN_DATA = 1;
+    /**
+     * 无数据
+     */
+    public static final Integer NONE_DATA = 0;
 
     private Long id;
 
@@ -30,6 +40,10 @@ public class ProductDto implements Serializable {
      * 状态：0=有效，1=失效
      */
     private Integer status;
+    /**
+     * 是否有模板标准数据
+     */
+    private Integer standardDataFlag;
 
     private String startTime;
 
@@ -45,7 +59,40 @@ public class ProductDto implements Serializable {
 
     private String tenantCode;
 
-    private List<StandardDto> standards;
+    /**
+     * 模板表格表头项目名称
+     */
+    private String headName;
+    /**
+     * 模板表格表头标题
+     */
+    private String headTitle;
+    /**
+     * 模板表格表头结果
+     */
+    private String headResult;
+    /**
+     * 模板表格底部名称
+     */
+    private String footName;
+    /**
+     * 模板表格底部内容
+     */
+    private String footContent;
+
+    /**
+     * 0=不允许，1=允许
+     */
+    private Integer allowModifyOutTime;
+    /**
+     * 0=不需要，1=需要
+     */
+    private Integer allowApprover;
+    /**
+     * 0=不需要，1=需要
+     */
+    private Integer allowShowCarNo;
+
 
     public ProductDto() {
     }
@@ -154,12 +201,76 @@ public class ProductDto implements Serializable {
         this.tenantCode = tenantCode;
     }
 
-    public List<StandardDto> getStandards() {
-        return standards;
+    public Integer getStandardDataFlag() {
+        return standardDataFlag;
     }
 
-    public void setStandards(List<StandardDto> standards) {
-        this.standards = standards;
+    public void setStandardDataFlag(Integer standardDataFlag) {
+        this.standardDataFlag = standardDataFlag;
+    }
+
+    public String getHeadName() {
+        return headName;
+    }
+
+    public void setHeadName(String headName) {
+        this.headName = headName;
+    }
+
+    public String getHeadTitle() {
+        return headTitle;
+    }
+
+    public void setHeadTitle(String headTitle) {
+        this.headTitle = headTitle;
+    }
+
+    public String getHeadResult() {
+        return headResult;
+    }
+
+    public void setHeadResult(String headResult) {
+        this.headResult = headResult;
+    }
+
+    public String getFootName() {
+        return footName;
+    }
+
+    public void setFootName(String footName) {
+        this.footName = footName;
+    }
+
+    public String getFootContent() {
+        return footContent;
+    }
+
+    public void setFootContent(String footContent) {
+        this.footContent = footContent;
+    }
+
+    public Integer getAllowModifyOutTime() {
+        return allowModifyOutTime;
+    }
+
+    public void setAllowModifyOutTime(Integer allowModifyOutTime) {
+        this.allowModifyOutTime = allowModifyOutTime;
+    }
+
+    public Integer getAllowApprover() {
+        return allowApprover;
+    }
+
+    public void setAllowApprover(Integer allowApprover) {
+        this.allowApprover = allowApprover;
+    }
+
+    public Integer getAllowShowCarNo() {
+        return allowShowCarNo;
+    }
+
+    public void setAllowShowCarNo(Integer allowShowCarNo) {
+        this.allowShowCarNo = allowShowCarNo;
     }
 
     @Override
@@ -171,6 +282,7 @@ public class ProductDto implements Serializable {
                 ", printName='" + printName + '\'' +
                 ", remark='" + remark + '\'' +
                 ", status=" + status +
+                ", standardDataFlag=" + standardDataFlag +
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
                 ", createBy='" + createBy + '\'' +
@@ -178,7 +290,14 @@ public class ProductDto implements Serializable {
                 ", modifyBy='" + modifyBy + '\'' +
                 ", modifyTime=" + modifyTime +
                 ", tenantCode='" + tenantCode + '\'' +
-                ", standards=" + standards +
+                ", headName='" + headName + '\'' +
+                ", headTitle='" + headTitle + '\'' +
+                ", headResult='" + headResult + '\'' +
+                ", footName='" + footName + '\'' +
+                ", footContent='" + footContent + '\'' +
+                ", allowModifyOutTime=" + allowModifyOutTime +
+                ", allowApprover=" + allowApprover +
+                ", allowShowCarNo=" + allowShowCarNo +
                 '}';
     }
 }

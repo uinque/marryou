@@ -1,175 +1,120 @@
 package com.marryou.metadata.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
- * Created by linhy on 2018/6/10.
+ * Created by linhy on 2018/6/3.
  */
 public class StandardParamsDto implements Serializable {
 
-    private static final long serialVersionUID = -1588496937385223404L;
+	private static final long serialVersionUID = 4418071748306879674L;
 
-    private Long id;
+	private String rowTitle;
 
-    private String oneLevel;
+	private Long id;
 
-    private String twoLevel;
+	private Long rowId;
 
-    private String threeLevel;
+	private Long columnId;
 
-    private Long standardId;
+	/**
+	 * 0=小于等于，1=大于等于
+	 */
+	private Integer type;
 
-    private String standardName;
+	private Long productId;
 
-    private String parameter;
+	private String val;
 
-    private Integer pointNum;
+	private Integer pointNum;
 
-    private Integer type;
+	public StandardParamsDto() {
+	}
 
-    private String createBy;
+	public StandardParamsDto(Long rowId, Long columnId, Integer type, Long productId, String val, Integer pointNum) {
+		this.rowId = rowId;
+		this.columnId = columnId;
+		this.type = type;
+		this.productId = productId;
+		this.val = val;
+		this.pointNum = pointNum;
+	}
 
-    private Date createTime;
+	public String getRowTitle() {
+		return rowTitle;
+	}
 
-    private Date modifyTime;
+	public void setRowTitle(String rowTitle) {
+		this.rowTitle = rowTitle;
+	}
 
-    private String modifyBy;
+	public Long getId() {
+		return id;
+	}
 
-    public StandardParamsDto() {
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public StandardParamsDto(Long id, Long standardId, String standardName, String parameter,
-                             Integer pointNum,Integer type) {
-        this.id = id;
-        this.standardId = standardId;
-        this.standardName = standardName;
-        this.parameter = parameter;
-        this.pointNum = pointNum;
-        this.type = type;
-    }
+	public Long getRowId() {
+		return rowId;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public void setRowId(Long rowId) {
+		this.rowId = rowId;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getColumnId() {
+		return columnId;
+	}
 
-    public Long getStandardId() {
-        return standardId;
-    }
+	public void setColumnId(Long columnId) {
+		this.columnId = columnId;
+	}
 
-    public void setStandardId(Long standardId) {
-        this.standardId = standardId;
-    }
+	public Integer getType() {
+		return type;
+	}
 
-    public String getStandardName() {
-        return standardName;
-    }
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
-    public void setStandardName(String standardName) {
-        this.standardName = standardName;
-    }
+	public Long getProductId() {
+		return productId;
+	}
 
-    public String getParameter() {
-        return parameter;
-    }
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
 
-    public void setParameter(String parameter) {
-        this.parameter = parameter;
-    }
+	public String getVal() {
+		return val;
+	}
 
-    public String getCreateBy() {
-        return createBy;
-    }
+	public void setVal(String val) {
+		this.val = val;
+	}
 
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
+	public Integer getPointNum() {
+		return pointNum;
+	}
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+	public void setPointNum(Integer pointNum) {
+		this.pointNum = pointNum;
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public String getModifyBy() {
-        return modifyBy;
-    }
-
-    public void setModifyBy(String modifyBy) {
-        this.modifyBy = modifyBy;
-    }
-
-    public String getOneLevel() {
-        return oneLevel;
-    }
-
-    public void setOneLevel(String oneLevel) {
-        this.oneLevel = oneLevel;
-    }
-
-    public String getTwoLevel() {
-        return twoLevel;
-    }
-
-    public void setTwoLevel(String twoLevel) {
-        this.twoLevel = twoLevel;
-    }
-
-    public String getThreeLevel() {
-        return threeLevel;
-    }
-
-    public void setThreeLevel(String threeLevel) {
-        this.threeLevel = threeLevel;
-    }
-
-    public Integer getPointNum() {
-        return pointNum;
-    }
-
-    public void setPointNum(Integer pointNum) {
-        this.pointNum = pointNum;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "StandardParamsDto{" +
-                "id=" + id +
-                ", oneLevel='" + oneLevel + '\'' +
-                ", twoLevel='" + twoLevel + '\'' +
-                ", threeLevel='" + threeLevel + '\'' +
-                ", standardId=" + standardId +
-                ", standardName='" + standardName + '\'' +
-                ", parameter='" + parameter + '\'' +
-                ", pointNum=" + pointNum +
-                ", type=" + type +
-                ", createBy='" + createBy + '\'' +
-                ", createTime=" + createTime +
-                ", modifyTime=" + modifyTime +
-                ", modifyBy='" + modifyBy + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "StandardParamsDto{" +
+				"rowTitle='" + rowTitle + '\'' +
+				", id=" + id +
+				", rowId=" + rowId +
+				", columnId=" + columnId +
+				", type=" + type +
+				", productId=" + productId +
+				", val='" + val + '\'' +
+				", pointNum=" + pointNum +
+				'}';
+	}
 }

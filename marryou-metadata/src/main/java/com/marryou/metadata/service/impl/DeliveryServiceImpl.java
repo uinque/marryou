@@ -12,7 +12,6 @@ import com.marryou.metadata.dto.DeliveryDto;
 import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.DeliveryStandardEntity;
 import com.marryou.metadata.entity.OperateLogEntity;
-import com.marryou.metadata.enums.LevelEnum;
 import com.marryou.metadata.enums.LogTypeEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.StatusEnum;
@@ -58,6 +57,8 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 	@Autowired
 	private DeliveryStandardService deliveryStandardService;
 	@Autowired
+	private DeliveryDao deliveryDao;
+	@Autowired
 	private OSSService ossService;
 
 	@Override
@@ -77,7 +78,7 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 				Path<String> auditor = root.get("auditor");
 				Path<String> carNo = root.get("carNo");
 				Path<String> batchNo = root.get("batchNo");
-				Path<LevelEnum> level = root.get("level");
+				Path<Long> columnId = root.get("columnId");
 				Path<Long> productId = root.get("productId");
 				Path<StatusEnum> status = root.get("status");
 				Path<Date> outTime = root.get("outTime");
@@ -93,8 +94,8 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 					if (StringUtils.isNotBlank(search.getBatchNo())) {
 						where.add(cb.and(cb.like(batchNo, search.getBatchNo() + "%")));
 					}
-					if (null != search.getLevel()) {
-						where.add(cb.and(cb.equal(level, LevelEnum.getEnum(search.getLevel()))));
+					if (null != search.getColumnId()) {
+						where.add(cb.and(cb.equal(columnId, search.getColumnId())));
 					}
 					if (null != search.getDistributorId()) {
 						where.add(cb.and(cb.equal(distributorId, search.getDistributorId())));
@@ -161,7 +162,7 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 					Path<String> auditor = root.get("auditor");
 					Path<String> carNo = root.get("carNo");
 					Path<String> batchNo = root.get("batchNo");
-					Path<LevelEnum> level = root.get("level");
+					Path<Long> columnId = root.get("columnId");
 					Path<Long> productId = root.get("productId");
 					Path<StatusEnum> status = root.get("status");
 					Path<Date> outTime = root.get("outTime");
@@ -177,8 +178,8 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 						if (StringUtils.isNotBlank(search.getBatchNo())) {
 							where.add(cb.and(cb.like(batchNo, search.getBatchNo() + "%")));
 						}
-						if (null != search.getLevel()) {
-							where.add(cb.and(cb.equal(level, LevelEnum.getEnum(search.getLevel()))));
+						if (null != search.getColumnId()) {
+							where.add(cb.and(cb.equal(columnId, search.getColumnId())));
 						}
 						if (null != search.getDistributorId()) {
 							where.add(cb.and(cb.equal(distributorId, search.getDistributorId())));
@@ -285,5 +286,10 @@ public class DeliveryServiceImpl extends AbsBaseService<DeliveryOrderEntity, Del
 		}
 		operateLogService.save(new OperateLogEntity(logContent, type, delivery.getId(), LogTypeEnum.DELIVERY, operate,
 				new Date(), delivery.getTenantCode()));
+	}
+
+	@Override
+	public int countByProductId(Long productId) {
+		return deliveryDao.countByProductId(productId);
 	}
 }

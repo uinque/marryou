@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface DeliveryDao extends BaseDao<DeliveryOrderEntity> {
+
+    int countByProductId(Long productId);
 }

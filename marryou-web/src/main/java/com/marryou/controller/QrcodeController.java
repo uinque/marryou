@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.dto.response.BaseResponse;
 import com.marryou.metadata.dto.DeliveryInfoDto;
-import com.marryou.metadata.dto.StandardParamsDto;
+import com.marryou.metadata.dto.StandardValDto;
 import com.marryou.metadata.dto.UserSearchDto;
 import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.DeliveryStandardEntity;
@@ -52,13 +52,15 @@ public class QrcodeController {
 			BeanUtils.copyProperties(delivery,info,"standards");
 			List<DeliveryStandardEntity> list = delivery.getStandards();
 			Preconditions.checkState(Collections3.isNotEmpty(list),"查无对应出库单检验结果");
-			List<StandardParamsDto> params = list.stream().map(s->{
-				StandardParamsDto dto = new StandardParamsDto();
+			List<StandardValDto> params = list.stream().map(s->{
+				StandardValDto dto = new StandardValDto();
 				BeanUtils.copyProperties(s,dto,"deliveryOrder");
 				return dto;
 			}).collect(Collectors.toList());
 			info.setTechno(delivery.getTechno().getValue());
-			info.setLevel(delivery.getLevel().getValue());
+			//info.setLevel(delivery.getLevel().getValue());
+			info.setColumnId(delivery.getColumnId());
+			info.setColumnTitle(delivery.getColumnTitle());
 			info.setStatus(delivery.getStatus().getValue());
 			info.setStandards(params);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success", info);

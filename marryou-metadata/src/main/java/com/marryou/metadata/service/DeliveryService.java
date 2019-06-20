@@ -41,4 +41,7 @@ public interface DeliveryService extends BaseService<DeliveryOrderEntity, Delive
 	void saveDelivery(DeliveryOrderEntity delivery, List<DeliveryStandardEntity> needDelete,
 					  String logContent, OperateTypeEnum type, String operate);
 
+
+	int countByProductId(Long productId);
+
 }

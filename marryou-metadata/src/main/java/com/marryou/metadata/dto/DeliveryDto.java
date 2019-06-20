@@ -84,9 +84,9 @@ public class DeliveryDto implements Serializable {
      */
     private String batchNo;
     /**
-     * 级别 0=一级，1=二级，2=三级
+     * 模板标准列标题ID(级别)
      */
-    private Integer level;
+    private Long columnId;
     /**
      * 工艺 0=分选
      */
@@ -108,7 +108,27 @@ public class DeliveryDto implements Serializable {
      */
     private Integer status;
 
-    private List<StandardParamsDto> standards;
+    /**
+     * 灰源：0=麦特，1=嵩屿，2=后石
+     */
+    private String flyashSource;
+
+    /**
+     * 外部关联编号
+     */
+    private String relationCode;
+
+    /**
+     * 磅单号
+     */
+    private String poundCode;
+
+    /**
+     * 审批人
+     */
+    private String approver;
+
+    private List<StandardValDto> standards;
 
     /**
      * 出库单出厂日期查询起始时间
@@ -252,12 +272,12 @@ public class DeliveryDto implements Serializable {
         this.batchNo = batchNo;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Long getColumnId() {
+        return columnId;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setColumnId(Long columnId) {
+        this.columnId = columnId;
     }
 
     public String getRemark() {
@@ -276,11 +296,11 @@ public class DeliveryDto implements Serializable {
         this.status = status;
     }
 
-    public List<StandardParamsDto> getStandards() {
+    public List<StandardValDto> getStandards() {
         return standards;
     }
 
-    public void setStandards(List<StandardParamsDto> standards) {
+    public void setStandards(List<StandardValDto> standards) {
         this.standards = standards;
     }
 
@@ -348,6 +368,38 @@ public class DeliveryDto implements Serializable {
         this.tenantCode = tenantCode;
     }
 
+    public String getFlyashSource() {
+        return flyashSource;
+    }
+
+    public void setFlyashSource(String flyashSource) {
+        this.flyashSource = flyashSource;
+    }
+
+    public String getRelationCode() {
+        return relationCode;
+    }
+
+    public void setRelationCode(String relationCode) {
+        this.relationCode = relationCode;
+    }
+
+    public String getPoundCode() {
+        return poundCode;
+    }
+
+    public void setPoundCode(String poundCode) {
+        this.poundCode = poundCode;
+    }
+
+    public String getApprover() {
+        return approver;
+    }
+
+    public void setApprover(String approver) {
+        this.approver = approver;
+    }
+
     @Override
     public String toString() {
         return "DeliveryDto{" +
@@ -369,12 +421,16 @@ public class DeliveryDto implements Serializable {
                 ", auditor='" + auditor + '\'' +
                 ", carNo='" + carNo + '\'' +
                 ", batchNo='" + batchNo + '\'' +
-                ", level=" + level +
+                ", columnId=" + columnId +
                 ", techno=" + techno +
                 ", remark='" + remark + '\'' +
                 ", qrcodeUrl='" + qrcodeUrl + '\'' +
                 ", title='" + title + '\'' +
                 ", status=" + status +
+                ", flyashSource='" + flyashSource + '\'' +
+                ", relationCode='" + relationCode + '\'' +
+                ", poundCode='" + poundCode + '\'' +
+                ", approver='" + approver + '\'' +
                 ", standards=" + standards +
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +

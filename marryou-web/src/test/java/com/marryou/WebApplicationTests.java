@@ -3,7 +3,7 @@ package com.marryou;
 import com.marryou.commons.utils.json.GsonUtils;
 import com.marryou.dto.request.BasePageRequest;
 import com.marryou.metadata.dto.DeliveryDto;
-import com.marryou.metadata.dto.StandardParamsDto;
+import com.marryou.metadata.dto.StandardValDto;
 import com.marryou.metadata.dto.UserSearchDto;
 import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.service.RedisService;
@@ -133,15 +133,15 @@ public class WebApplicationTests {
 		dto.setCarNo("闽D21034");
 		dto.setDeliveryTime("2018-06-16 10:00:21");
 		dto.setDeliveryNo("wms123456");
-		dto.setLevel(0);
+		//dto.setLevel(0);
 		dto.setGrossWeight(new BigDecimal(12.12));
 		dto.setNetWeight(new BigDecimal(21.4));
 		dto.setTareWeight(new BigDecimal(10.887));
 		dto.setStatus(0);
 
-		List<StandardParamsDto> standards = Lists.newArrayList();
+		List<StandardValDto> standards = Lists.newArrayList();
 		for(int i=0;i<3;i++){
-			StandardParamsDto standardDto = new StandardParamsDto();
+			StandardValDto standardDto = new StandardValDto();
 			standardDto.setStandardId(1L+i);
 			standardDto.setStandardName("水泥指标"+i);
 			standardDto.setParameter("1.23");

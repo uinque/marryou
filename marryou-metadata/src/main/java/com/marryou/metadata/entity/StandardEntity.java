@@ -32,11 +32,13 @@ public class StandardEntity extends BaseEntity {
 
     private String threeLevel;
 
-    private ProductEntity product;
+    private Long productId;
 
     private Integer pointNum;
 
     private Integer type;
+
+    private Long rowId;
 
     public StandardEntity() {
     }
@@ -87,14 +89,13 @@ public class StandardEntity extends BaseEntity {
         this.threeLevel = threeLevel;
     }
 
-    @ManyToOne
-    @JoinColumn(name="product_id")
-    public ProductEntity getProduct() {
-        return product;
+    @Column(name = "product_id")
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProduct(ProductEntity product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     @Column(name = "point_num")
@@ -115,6 +116,15 @@ public class StandardEntity extends BaseEntity {
         this.type = type;
     }
 
+    @Column(name = "row_id")
+    public Long getRowId() {
+        return rowId;
+    }
+
+    public void setRowId(Long rowId) {
+        this.rowId = rowId;
+    }
+
     @Override
     public String toString() {
         return "StandardEntity{" +
@@ -122,7 +132,7 @@ public class StandardEntity extends BaseEntity {
                 ", oneLevel=" + oneLevel +
                 ", twoLevel=" + twoLevel +
                 ", threeLevel=" + threeLevel +
-                ", product=" + product +
+                ", productId=" + productId +
                 ", pointNum=" + pointNum +
                 ", type=" + type +
                 "} " + super.toString();

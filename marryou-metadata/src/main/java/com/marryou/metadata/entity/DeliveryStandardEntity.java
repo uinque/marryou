@@ -25,9 +25,13 @@ public class DeliveryStandardEntity extends BaseEntity {
     private static final long serialVersionUID = 7281395295497659453L;
 
     private DeliveryOrderEntity deliveryOrder;
-
+    /**
+     * 模板标准ID
+     */
     private Long standardId;
-
+    /**
+     * 模板标准行名称
+     */
     private String standardName;
 
     private String parameter;

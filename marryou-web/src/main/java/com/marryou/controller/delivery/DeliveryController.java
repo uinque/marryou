@@ -20,25 +20,26 @@ import com.marryou.commons.utils.time.DateUtils;
 import com.marryou.metadata.dto.DeliveryCountDto;
 import com.marryou.metadata.dto.DeliveryDto;
 import com.marryou.metadata.dto.DeliveryInfoDto;
-import com.marryou.metadata.dto.StandardParamsDto;
+import com.marryou.metadata.dto.StandardValDto;
 import com.marryou.metadata.entity.CompanyEntity;
 import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.DeliveryStandardEntity;
 import com.marryou.metadata.entity.ManufacturerEntity;
 import com.marryou.metadata.entity.ProductEntity;
 import com.marryou.metadata.entity.StandardEntity;
+import com.marryou.metadata.entity.StandardParamsEntity;
+import com.marryou.metadata.entity.StandardTitleEntity;
 import com.marryou.metadata.entity.TenantEntity;
 import com.marryou.metadata.enums.LevelEnum;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.TechnoEnum;
-import com.marryou.metadata.persistence.SearchFilters;
-import com.marryou.metadata.persistence.Searcher;
 import com.marryou.metadata.service.CompanyService;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.ManufacturerService;
 import com.marryou.metadata.service.ProductService;
-import com.marryou.metadata.service.RedisService;
+import com.marryou.metadata.service.StandardParamsService;
 import com.marryou.metadata.service.StandardService;
+import com.marryou.metadata.service.StandardTitleService;
 import com.marryou.metadata.service.TenantService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
@@ -52,12 +53,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.base.Preconditions;
@@ -89,6 +88,10 @@ public class DeliveryController {
 	private DeliveryService deliveryService;
 	@Autowired
 	private StandardService standardService;
+	@Autowired
+	private StandardParamsService standardParamsService;
+	@Autowired
+	private StandardTitleService standardTitleService;
 	@Autowired
 	private ProductService productService;
 	@Autowired
@@ -122,32 +125,37 @@ public class DeliveryController {
 			Preconditions.checkNotNull(delivery.getNetWeight(), "净重为null");
 			Preconditions.checkNotNull(delivery.getTareWeight(), "皮重为null");
 			Preconditions.checkNotNull(delivery.getProductId(), "产品id为null");
+			Preconditions.checkNotNull(delivery.getColumnId(), "出库单级别为null");
 			Preconditions.checkState(Collections3.isNotEmpty(delivery.getStandards()), "检查结果指标为null");
 			ProductEntity product = productService.findOne(delivery.getProductId());
 			Preconditions.checkNotNull(product, "查无对应产品数据");
+			StandardTitleEntity columnTitle = standardTitleService.findOne(delivery.getColumnId());
+			Preconditions.checkNotNull(columnTitle, "查无对应模板标准列标题数据");
 			DeliveryOrderEntity d = new DeliveryOrderEntity();
-			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "level", "status", "standards");
+			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "status", "standards");
 			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.getRandom(2));
 			d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
 			d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
-			d.setLevel(LevelEnum.getEnum(delivery.getLevel()));
 			d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
 			d.setRemark(product.getRemark());
 			d.setStatus(StatusEnum.EFFECTIVE);
+			d.setColumnId(delivery.getColumnId());
+			d.setColumnTitle(columnTitle.getName());
 			d.setTenantCode(operator.getTenantCode());
 			d.setCreateBy(loginName);
 			d.setCreateTime(new Date());
 			List<DeliveryStandardEntity> list = delivery.getStandards().stream().map(s -> {
-				StandardEntity standard = standardService.findOne(s.getStandardId());
+				StandardParamsEntity standard = standardParamsService.findOne(s.getStandardId());
 				Preconditions.checkNotNull(standard, "查无对应的产品标准值");
-				//Preconditions.checkState(StringUtils.isNotBlank(s.getParameter()), "产品标准值为null");
+				StandardTitleEntity rowTitle = standardTitleService.findOne(standard.getRowId());
+				Preconditions.checkNotNull(rowTitle,"产品模板标准查无对应行标题内容");
 				String value = "";
 				if(StringUtils.isNotBlank(s.getParameter())){
 					BigDecimal val = new BigDecimal(s.getParameter()).setScale(standard.getPointNum(),
 							BigDecimal.ROUND_HALF_DOWN);
 					value = val.toString();
 				}
-				DeliveryStandardEntity ds = new DeliveryStandardEntity(d, s.getStandardId(), s.getStandardName(),
+				DeliveryStandardEntity ds = new DeliveryStandardEntity(d, s.getStandardId(), rowTitle.getName(),
 						value);
 				ds.setTenantCode(operator.getTenantCode());
 				ds.setCreateBy(loginName);
@@ -207,7 +215,6 @@ public class DeliveryController {
 			BeanUtils.copyProperties(delivery, info, "standards");
 			info.setStatus(delivery.getStatus().getValue());
 			info.setTechno(delivery.getTechno().getValue());
-			info.setLevel(delivery.getLevel().getValue());
 			ProductEntity product = productService.findOne(delivery.getProductId());
 			if (null != product) {
 				if (StringUtils.isNotBlank(product.getRemark())) {
@@ -220,19 +227,20 @@ public class DeliveryController {
 			TenantEntity tenant = tenantService.findByTenantCode(info.getTenantCode());
 			if(null!=tenant){
 				info.setAllowModifyOutTime(tenant.getModifyOutTimeFlag());
+				info.setAllowApprover(tenant.getApproverFlag());
+				info.setAllowShowCarNo(tenant.getShowCarNoFlag());
 			}
 			List<DeliveryStandardEntity> list = delivery.getStandards();
 			//Preconditions.checkState(Collections3.isNotEmpty(list), "查无对应出库单检验结果");
-			List<StandardParamsDto> params = list.stream().map(s -> {
-				StandardParamsDto dto = new StandardParamsDto();
+			List<StandardValDto> params = list.stream().map(s -> {
+				StandardValDto dto = new StandardValDto();
 				BeanUtils.copyProperties(s, dto);
-				StandardEntity level = standardService.findOne(s.getStandardId());
-				if (null != level) {
-					dto.setPointNum(level.getPointNum());
-					dto.setOneLevel(level.getOneLevel());
-					dto.setTwoLevel(level.getTwoLevel());
-					dto.setThreeLevel(level.getThreeLevel());
-					dto.setType(level.getType());
+				StandardParamsEntity standardParam = standardParamsService.findOne(s.getStandardId());
+				if (null != standardParam) {
+					List<StandardParamsEntity> rowParams = standardParamsService.findByProductIdAndRowId(delivery.getProductId(),standardParam.getRowId());
+					dto.setParams(rowParams);
+					dto.setPointNum(standardParam.getPointNum());
+					dto.setType(standardParam.getType());
 				}
 				return dto;
 			}).collect(Collectors.toList());
@@ -331,7 +339,6 @@ public class DeliveryController {
 					BUtils.copyPropertiesIgnoreNull(d, deliveryInfoDto, "standards");
 					deliveryInfoDto.setStatus(d.getStatus().getValue());
 					deliveryInfoDto.setTechno(d.getTechno().getValue());
-					deliveryInfoDto.setLevel(d.getLevel().getValue());
 					return deliveryInfoDto;
 				}).collect(Collectors.toList());
 			}
@@ -383,8 +390,12 @@ public class DeliveryController {
 			if (StringUtils.isNotBlank(delivery.getOutTime())) {
 				d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
 			}
-			if (null != delivery.getLevel()) {
-				d.setLevel(LevelEnum.getEnum(delivery.getLevel()));
+			if (null != delivery.getColumnId()) {
+				StandardTitleEntity columnTitle = standardTitleService.findOne(delivery.getColumnId());
+				if(null!=columnTitle){
+					d.setColumnId(delivery.getColumnId());
+					d.setColumnTitle(columnTitle.getName());
+				}
 			}
 			if (null != delivery.getTechno()) {
 				d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
@@ -393,7 +404,7 @@ public class DeliveryController {
 			d.setModifyTime(new Date());
 			List<DeliveryStandardEntity> needAdd = Lists.newArrayList();
 			List<DeliveryStandardEntity> needUpdate = Lists.newArrayList();
-			Map<Long, StandardParamsDto> needUpdateMap = Maps.newHashMap();
+			Map<Long, StandardValDto> needUpdateMap = Maps.newHashMap();
 			List<DeliveryStandardEntity> needDelete = Lists.newArrayList();
 			delivery.getStandards().forEach(s -> {
 				if (null == s.getId()) {
@@ -408,7 +419,7 @@ public class DeliveryController {
 				}
 			});
 			d.getStandards().forEach(ds -> {
-				StandardParamsDto sdto = needUpdateMap.get(ds.getId());
+				StandardValDto sdto = needUpdateMap.get(ds.getId());
 				if (null != sdto) {
 					BUtils.copyPropertiesIgnoreNull(sdto, ds, "id", "createTime", "createBy");
 					if(StringUtils.isBlank(sdto.getParameter())){

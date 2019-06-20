@@ -73,6 +73,10 @@ public class DeliveryInfoDto{
      */
     private String auditor;
     /**
+     * 审批人
+     */
+    private String approver;
+    /**
      * 运输车牌
      */
     private String carNo;
@@ -81,9 +85,13 @@ public class DeliveryInfoDto{
      */
     private String batchNo;
     /**
-     * 级别 0=一级、1=二级、2=三级
+     * 模板标准列标题ID
      */
-    private Integer level;
+    private Long columnId;
+    /**
+     * 模板标准列名称
+     */
+    private String columnTitle;
     /**
      * 工艺 0=分选
      */
@@ -117,12 +125,35 @@ public class DeliveryInfoDto{
     /**
      * 0=不允许，1=允许
      */
-    private Integer allowModifyOutTime = TenantEntity.OUTTIME_FLAG_NO;
+    private Integer allowModifyOutTime = TenantEntity.FLAG_NO;
+    /**
+     * 0=不需要，1=需要
+     */
+    private Integer allowApprover = TenantEntity.FLAG_NO;
+    /**
+     * 0=不需要，1=需要
+     */
+    private Integer allowShowCarNo = TenantEntity.FLAG_NO;
+
+    /**
+     * 灰源：0=麦特，1=嵩屿，2=后石
+     */
+    private String flyashSource;
+
+    /**
+     * 外部关联编号
+     */
+    private String relationCode;
+
+    /**
+     * 磅单号
+     */
+    private String poundCode;
 
     /**
      * 标准值
      */
-    private List<StandardParamsDto> standards;
+    private List<StandardValDto> standards;
 
     public Long getId() {
         return id;
@@ -268,12 +299,20 @@ public class DeliveryInfoDto{
         this.batchNo = batchNo;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Long getColumnId() {
+        return columnId;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setColumnId(Long columnId) {
+        this.columnId = columnId;
+    }
+
+    public String getColumnTitle() {
+        return columnTitle;
+    }
+
+    public void setColumnTitle(String columnTitle) {
+        this.columnTitle = columnTitle;
     }
 
     public Integer getTechno() {
@@ -332,6 +371,14 @@ public class DeliveryInfoDto{
         this.allowModifyOutTime = allowModifyOutTime;
     }
 
+    public Integer getAllowApprover() {
+        return allowApprover;
+    }
+
+    public void setAllowApprover(Integer allowApprover) {
+        this.allowApprover = allowApprover;
+    }
+
     public String getCreateBy() {
         return createBy;
     }
@@ -364,11 +411,51 @@ public class DeliveryInfoDto{
         this.modifyBy = modifyBy;
     }
 
-    public List<StandardParamsDto> getStandards() {
+    public List<StandardValDto> getStandards() {
         return standards;
     }
 
-    public void setStandards(List<StandardParamsDto> standards) {
+    public void setStandards(List<StandardValDto> standards) {
         this.standards = standards;
+    }
+
+    public String getFlyashSource() {
+        return flyashSource;
+    }
+
+    public void setFlyashSource(String flyashSource) {
+        this.flyashSource = flyashSource;
+    }
+
+    public String getRelationCode() {
+        return relationCode;
+    }
+
+    public void setRelationCode(String relationCode) {
+        this.relationCode = relationCode;
+    }
+
+    public String getPoundCode() {
+        return poundCode;
+    }
+
+    public void setPoundCode(String poundCode) {
+        this.poundCode = poundCode;
+    }
+
+    public String getApprover() {
+        return approver;
+    }
+
+    public void setApprover(String approver) {
+        this.approver = approver;
+    }
+
+    public Integer getAllowShowCarNo() {
+        return allowShowCarNo;
+    }
+
+    public void setAllowShowCarNo(Integer allowShowCarNo) {
+        this.allowShowCarNo = allowShowCarNo;
     }
 }

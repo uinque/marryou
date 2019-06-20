@@ -81,6 +81,24 @@ public class DeliveryExportDto implements Serializable {
 	@Excel(name = "出厂时间", exportFormat = "yyyy-MM-dd HH:mm:ss", orderNum = "13")
 	private Date createTime;
 
+	/**
+	 * 灰源：0=麦特，1=嵩屿，2=后石
+	 */
+	@Excel(name = "灰源", orderNum = "14")
+	private String flyashSource;
+
+	/**
+	 * 外部关联编号
+	 */
+	@Excel(name = "关联编号", orderNum = "15")
+	private String relationCode;
+
+	/**
+	 * 磅单号
+	 */
+	@Excel(name = "磅单号", orderNum = "16")
+	private String poundCode;
+
 	public DeliveryExportDto() {
 	}
 
@@ -195,4 +213,28 @@ public class DeliveryExportDto implements Serializable {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+	public String getFlyashSource() {
+		return flyashSource;
+	}
+
+	public void setFlyashSource(String flyashSource) {
+		this.flyashSource = flyashSource;
+	}
+
+	public String getRelationCode() {
+		return relationCode;
+	}
+
+	public void setRelationCode(String relationCode) {
+		this.relationCode = relationCode;
+	}
+
+	public String getPoundCode() {
+		return poundCode;
+	}
+
+	public void setPoundCode(String poundCode) {
+		this.poundCode = poundCode;
+	}
 }

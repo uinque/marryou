@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by linhy on 2018/6/6.
@@ -21,6 +22,8 @@ public class StandardServiceImpl extends AbsBaseService<StandardEntity, Standard
 
 	@Autowired
 	private OperateLogService operateLogService;
+	@Autowired
+	private StandardDao standardDao;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -36,5 +39,10 @@ public class StandardServiceImpl extends AbsBaseService<StandardEntity, Standard
 		operateLogService.save(new OperateLogEntity(logContent, type, standard.getId(), LogTypeEnum.STANDARD, operate,
 				new Date(), standard.getTenantCode()));
 		this.delete(standard.getId());
+	}
+
+	@Override
+	public List<StandardEntity> findByPrdouctId(Long productId) {
+		return standardDao.findByProductId(productId);
 	}
 }

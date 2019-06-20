@@ -21,9 +21,9 @@ public class TenantEntity extends BaseEntity {
 
     private static final long serialVersionUID = 4873052956296068049L;
 
-    public static final Integer OUTTIME_FLAG_NO = 0;
+    public static final Integer FLAG_NO = 0;
 
-    public static final Integer OUTTIME_FLAG_ALLOW = 1;
+    public static final Integer FLAG_ALLOW = 1;
 
     private String name;
 
@@ -35,16 +35,18 @@ public class TenantEntity extends BaseEntity {
      * 是否允许修改出厂时间(0=不允许，1=允许)
      */
     private Integer modifyOutTimeFlag;
+    /**
+     * 是否需要审批人(0=不需要，1=需要)
+     */
+    private Integer approverFlag;
+    /**
+     * 是否需要展示车牌(0=不需要，1=需要)
+     */
+    private Integer showCarNoFlag;
 
     public TenantEntity() {
     }
 
-    public TenantEntity(String name, String info, StatusEnum status, Integer modifyOutTimeFlag) {
-        this.name = name;
-        this.info = info;
-        this.status = status;
-        this.modifyOutTimeFlag = modifyOutTimeFlag;
-    }
 
     @Column(name = "name")
     public String getName() {
@@ -82,6 +84,24 @@ public class TenantEntity extends BaseEntity {
         this.modifyOutTimeFlag = modifyOutTimeFlag;
     }
 
+    @Column(name = "approver_flag")
+    public Integer getApproverFlag() {
+        return approverFlag;
+    }
+
+    public void setApproverFlag(Integer approverFlag) {
+        this.approverFlag = approverFlag;
+    }
+
+    @Column(name = "car_flag")
+    public Integer getShowCarNoFlag() {
+        return showCarNoFlag;
+    }
+
+    public void setShowCarNoFlag(Integer showCarNoFlag) {
+        this.showCarNoFlag = showCarNoFlag;
+    }
+
     @Override
     public String toString() {
         return "TenantEntity{" +
@@ -89,6 +109,8 @@ public class TenantEntity extends BaseEntity {
                 ", info='" + info + '\'' +
                 ", status=" + status +
                 ", modifyOutTimeFlag=" + modifyOutTimeFlag +
+                ", approverFlag=" + approverFlag +
+                ", showCarNoFlag=" + showCarNoFlag +
                 "} " + super.toString();
     }
 }

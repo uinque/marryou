@@ -1,16 +1,15 @@
-package com.marryou.controller.prduct;
+package com.marryou.controller.product;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.marryou.commons.utils.base.BUtils;
 import com.marryou.commons.utils.collections.Collections3;
 import com.marryou.dto.response.BaseResponse;
 import com.marryou.metadata.dto.ProductDto;
-import com.marryou.metadata.dto.StandardDto;
 import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.ProductEntity;
-import com.marryou.metadata.entity.StandardEntity;
+import com.marryou.metadata.entity.StandardParamsEntity;
+import com.marryou.metadata.entity.TenantEntity;
 import com.marryou.metadata.entity.UserEntity;
 import com.marryou.metadata.enums.OperateTypeEnum;
 import com.marryou.metadata.enums.ProductTypeEnum;
@@ -20,6 +19,8 @@ import com.marryou.metadata.persistence.SearchFilters;
 import com.marryou.metadata.persistence.Searcher;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.ProductService;
+import com.marryou.metadata.service.StandardParamsService;
+import com.marryou.metadata.service.TenantService;
 import com.marryou.metadata.service.UserService;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
@@ -30,10 +31,8 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +42,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +59,11 @@ public class ProductController {
 	private ProductService productService;
 	@Autowired
 	private DeliveryService deliveryService;
+	@Autowired
+	private StandardParamsService standardParamsService;
+	@Autowired
+	private TenantService tenantService;
+
 
 	@ApiOperation(value = "创建产品", notes = "提交产品创建信息")
 	@ApiImplicitParam(name = "product", value = "产品信息", required = true, dataType = "Object")
@@ -77,21 +80,14 @@ public class ProductController {
 			BUtils.copyPropertiesIgnoreNull(product, p);
 			p.setStatus(StatusEnum.getEnum(product.getStatus()));
 			p.setType(ProductTypeEnum.getEnum(product.getType()));
+			p.setHeadName(product.getHeadName());
+			p.setHeadTitle(product.getHeadTitle());
+			p.setHeadResult(product.getHeadResult());
+			p.setFootName(product.getFootName());
+			p.setFootContent(product.getFootContent());
 			p.setTenantCode(operator.getTenantCode());
 			p.setCreateBy(loginName);
 			p.setCreateTime(new Date());
-			if (Collections3.isNotEmpty(product.getStandards())) {
-				List<StandardEntity> standards = product.getStandards().stream().map(s -> {
-					StandardEntity standard = new StandardEntity(s.getName(), s.getOneLevel(), s.getTwoLevel(),
-							s.getThreeLevel(), s.getPointNum(),s.getType());
-					standard.setTenantCode(operator.getTenantCode());
-					standard.setCreateBy(p.getCreateBy());
-					standard.setCreateTime(p.getCreateTime());
-					standard.setProduct(p);
-					return standard;
-				}).collect(Collectors.toList());
-				p.setStandards(standards);
-			}
 			productService.saveProduct(p, "新增产品:" + p.getName(), OperateTypeEnum.CREATE, loginName);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "创建成功");
 		} catch (Exception e) {
@@ -123,47 +119,7 @@ public class ProductController {
 			p.setType(ProductTypeEnum.getEnum(product.getType()));
 			p.setModifyBy(loginName);
 			p.setModifyTime(new Date());
-			List<StandardEntity> list = Lists.newArrayList();
-			List<Long> delList = Lists.newArrayList();
-			if (Collections3.isNotEmpty(product.getStandards())) {
-				List<StandardEntity> standardList = p.getStandards();
-				List<Long> updateList = Lists.newArrayList();
-				if (Collections3.isNotEmpty(standardList)) {
-					Map<Long, StandardEntity> map = Maps.newHashMap();
-					for (StandardEntity st : standardList) {
-						map.put(st.getId(), st);
-					}
-					product.getStandards().forEach(s -> {
-						if (null != s.getId()) {
-							StandardEntity standard = map.get(s.getId());
-							if (null != standard) {
-								BUtils.copyPropertiesIgnoreNull(s, standard);
-								standard.setProduct(p);
-								standard.setModifyBy(loginName);
-								standard.setModifyTime(new Date());
-								list.add(standard);
-								updateList.add(standard.getId());
-							}
-						} else {
-							StandardEntity standardEntity = new StandardEntity();
-							BUtils.copyPropertiesIgnoreNull(s, standardEntity, "id");
-							standardEntity.setTenantCode(p.getTenantCode());
-							standardEntity.setProduct(p);
-							standardEntity.setCreateTime(new Date());
-							standardEntity.setCreateBy(loginName);
-							list.add(standardEntity);
-						}
-					});
-				}
-				//判断是否有需删除的标准数据
-				for (StandardEntity s : standardList) {
-					if (!updateList.contains(s.getId())) {
-						delList.add(s.getId());
-					}
-				}
-			}
-			p.setStandards(list);
-			productService.updateProduct(p, delList, "更新产品:" + p.getName(), OperateTypeEnum.UPDATE, loginName);
+			productService.updateProduct(p, "更新产品:" + p.getName(), OperateTypeEnum.UPDATE, loginName);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "更新成功");
 		} catch (Exception e) {
 			logger.info("更新产品失败:{}", e.getMessage(), e);
@@ -214,13 +170,12 @@ public class ProductController {
 			BUtils.copyPropertiesIgnoreNull(p, product);
 			product.setType(p.getType().getValue());
 			product.setStatus(p.getStatus().getValue());
-			List<StandardDto> standards = p.getStandards().stream().map(s -> {
-				StandardDto standard = new StandardDto();
-				BUtils.copyPropertiesIgnoreNull(s, standard);
-				standard.setProductId(p.getId());
-				return standard;
-			}).collect(Collectors.toList());
-			product.setStandards(standards);
+			TenantEntity tenant = tenantService.findByTenantCode(p.getTenantCode());
+			if(null!=tenant){
+				product.setAllowModifyOutTime(tenant.getModifyOutTimeFlag());
+				product.setAllowApprover(tenant.getApproverFlag());
+				product.setAllowShowCarNo(tenant.getShowCarNoFlag());
+			}
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success", product);
 		} catch (Exception e) {
 			logger.info("获取 产品失败:{}", e.getMessage(), e);
@@ -248,13 +203,12 @@ public class ProductController {
 				BUtils.copyPropertiesIgnoreNull(p, product);
 				product.setType(p.getType().getValue());
 				product.setStatus(p.getStatus().getValue());
-				List<StandardDto> standards = p.getStandards().stream().map(s -> {
-					StandardDto standard = new StandardDto();
-					BUtils.copyPropertiesIgnoreNull(s, standard);
-					standard.setProductId(p.getId());
-					return standard;
-				}).collect(Collectors.toList());
-				product.setStandards(standards);
+				List<StandardParamsEntity> datas = standardParamsService.findByProductId(p.getId());
+				if(Collections3.isNotEmpty(datas)){
+					product.setStandardDataFlag(ProductDto.BEEN_DATA);
+				}else{
+					product.setStandardDataFlag(ProductDto.NONE_DATA);
+				}
 				return product;
 			}).collect(Collectors.toList());
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success", dtos);
@@ -284,9 +238,6 @@ public class ProductController {
 			searchFilters.add(Searcher.eq("productId", id));
 			List<DeliveryOrderEntity> list = deliveryService.findAll(searchFilters);
 			Preconditions.checkState(Collections3.isEmpty(list), "该产品已有对应单据，无法执行删除操作");
-			if (Collections3.isNotEmpty(product.getStandards())) {
-				logger.info("产品ID:{},级联删除相关标准指标", id);
-			}
 			productService.deleteProduct(product, "删除产品:" + product.getName(), OperateTypeEnum.DELETE, loginName);
 			return new BaseResponse(BaseResponse.CODE_SUCCESS, "success");
 		} catch (Exception e) {

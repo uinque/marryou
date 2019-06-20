@@ -19,6 +19,12 @@ public class TenantDto implements Serializable {
     private Integer status;
     //是否可修改出厂时间 0=不可修改，1=可修改
     private Integer modifyOutTimeFlag;
+    /**
+     * 是否需要审批人(0=不需要，1=需要)
+     */
+    private Integer approverFlag;
+    //是否需要展示车牌(0=不需要，1=需要)
+    private Integer showCarNoFlag;
     //租户编码
     private String tenantCode;
 
@@ -113,6 +119,22 @@ public class TenantDto implements Serializable {
         this.modifyOutTimeFlag = modifyOutTimeFlag;
     }
 
+    public Integer getApproverFlag() {
+        return approverFlag;
+    }
+
+    public void setApproverFlag(Integer approverFlag) {
+        this.approverFlag = approverFlag;
+    }
+
+    public Integer getShowCarNoFlag() {
+        return showCarNoFlag;
+    }
+
+    public void setShowCarNoFlag(Integer showCarNoFlag) {
+        this.showCarNoFlag = showCarNoFlag;
+    }
+
     @Override
     public String toString() {
         return "TenantDto{" +
@@ -121,6 +143,8 @@ public class TenantDto implements Serializable {
                 ", info='" + info + '\'' +
                 ", status=" + status +
                 ", modifyOutTimeFlag=" + modifyOutTimeFlag +
+                ", approverFlag=" + approverFlag +
+                ", showCarNoFlag=" + showCarNoFlag +
                 ", tenantCode='" + tenantCode + '\'' +
                 ", createBy='" + createBy + '\'' +
                 ", createTime=" + createTime +
