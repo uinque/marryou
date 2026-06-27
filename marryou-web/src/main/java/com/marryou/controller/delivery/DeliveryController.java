@@ -149,12 +149,7 @@ public class DeliveryController {
 				Preconditions.checkNotNull(standard, "查无对应的产品标准值");
 				StandardTitleEntity rowTitle = standardTitleService.findOne(standard.getRowId());
 				Preconditions.checkNotNull(rowTitle,"产品模板标准查无对应行标题内容");
-				String value = "";
-				if(StringUtils.isNotBlank(s.getParameter())){
-					BigDecimal val = new BigDecimal(s.getParameter()).setScale(standard.getPointNum(),
-							BigDecimal.ROUND_HALF_DOWN);
-					value = val.toString();
-				}
+				String value = formatStandardParameter(s.getParameter(), standard.getPointNum());
 				DeliveryStandardEntity ds = new DeliveryStandardEntity(d, s.getStandardId(), rowTitle.getName(),
 						value);
 				ds.setTenantCode(operator.getTenantCode());
@@ -169,6 +164,18 @@ public class DeliveryController {
 		} catch (Exception e) {
 			logger.info("创建出库单失败:{}", e.getMessage(), e);
 			return new BaseResponse(BaseResponse.CODE_FAILED, "创建失败:" + e.getMessage());
+		}
+	}
+
+	static String formatStandardParameter(String parameter, Integer pointNum) {
+		if (StringUtils.isBlank(parameter)) {
+			return "";
+		}
+		try {
+			BigDecimal val = new BigDecimal(parameter).setScale(pointNum, BigDecimal.ROUND_HALF_DOWN);
+			return val.toString();
+		} catch (NumberFormatException e) {
+			return parameter;
 		}
 	}
 
