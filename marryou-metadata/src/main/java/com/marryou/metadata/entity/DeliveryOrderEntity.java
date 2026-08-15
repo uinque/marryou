@@ -48,6 +48,10 @@ public class DeliveryOrderEntity extends BaseEntity {
      */
     private Date outTime;
     /**
+     * 填报日期
+     */
+    private Date reportDate;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -192,6 +196,17 @@ public class DeliveryOrderEntity extends BaseEntity {
 
     public void setOutTime(Date outTime) {
         this.outTime = outTime;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @Column(name = "report_date")
+    public Date getReportDate() {
+        return reportDate;
+    }
+
+    public void setReportDate(Date reportDate) {
+        this.reportDate = reportDate;
     }
 
     @Column(name = "supplier_id")
@@ -444,6 +459,7 @@ public class DeliveryOrderEntity extends BaseEntity {
                 "deliveryNo='" + deliveryNo + '\'' +
                 ", deliveryTime=" + deliveryTime +
                 ", outTime=" + outTime +
+                ", reportDate=" + reportDate +
                 ", supplierId=" + supplierId +
                 ", supplierName='" + supplierName + '\'' +
                 ", distributorId=" + distributorId +

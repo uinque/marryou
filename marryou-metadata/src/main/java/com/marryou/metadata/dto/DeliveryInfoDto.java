@@ -25,6 +25,10 @@ public class DeliveryInfoDto{
      */
     private Date outTime;
     /**
+     * 填报日期
+     */
+    private Date reportDate;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -185,6 +189,14 @@ public class DeliveryInfoDto{
 
     public void setOutTime(Date outTime) {
         this.outTime = outTime;
+    }
+
+    public Date getReportDate() {
+        return reportDate;
+    }
+
+    public void setReportDate(Date reportDate) {
+        this.reportDate = reportDate;
     }
 
     public Long getSupplierId() {
