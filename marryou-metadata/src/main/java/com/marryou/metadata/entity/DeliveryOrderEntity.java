@@ -52,6 +52,10 @@ public class DeliveryOrderEntity extends BaseEntity {
      */
     private Date reportDate;
     /**
+     * 生产厂地址
+     */
+    private String produceAddress;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -207,6 +211,15 @@ public class DeliveryOrderEntity extends BaseEntity {
 
     public void setReportDate(Date reportDate) {
         this.reportDate = reportDate;
+    }
+
+    @Column(name = "produce_address")
+    public String getProduceAddress() {
+        return produceAddress;
+    }
+
+    public void setProduceAddress(String produceAddress) {
+        this.produceAddress = produceAddress;
     }
 
     @Column(name = "supplier_id")
@@ -460,6 +473,7 @@ public class DeliveryOrderEntity extends BaseEntity {
                 ", deliveryTime=" + deliveryTime +
                 ", outTime=" + outTime +
                 ", reportDate=" + reportDate +
+                ", produceAddress='" + produceAddress + '\'' +
                 ", supplierId=" + supplierId +
                 ", supplierName='" + supplierName + '\'' +
                 ", distributorId=" + distributorId +

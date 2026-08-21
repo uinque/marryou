@@ -132,12 +132,16 @@ public class DeliveryController {
 			StandardTitleEntity columnTitle = standardTitleService.findOne(delivery.getColumnId());
 			Preconditions.checkNotNull(columnTitle, "查无对应模板标准列标题数据");
 			DeliveryOrderEntity d = new DeliveryOrderEntity();
-			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "reportDate", "status", "standards");
+			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "reportDate", "produceAddress", "status",
+					"standards");
 			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.getRandom(2));
 			d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
 			d.setOutTime(DateUtils.convertToDateTime(delivery.getOutTime()));
 			if (StringUtils.isNotBlank(delivery.getReportDate())) {
 				d.setReportDate(DateUtils.convertToDateTime(delivery.getReportDate()));
+			}
+			if (StringUtils.isNotBlank(delivery.getProduceAddress())) {
+				d.setProduceAddress(delivery.getProduceAddress());
 			}
 			d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
 			d.setRemark(product.getRemark());
@@ -389,7 +393,7 @@ public class DeliveryController {
 			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
 				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),d.getTenantCode()),"非本租户下的出库单，无权操作");
 			}
-			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "reportDate", "level", "status", "qrcodeUrl",
+			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "reportDate", "produceAddress", "level", "status", "qrcodeUrl",
 					"standards");
 			d.setDistributorName(company.getName());
 			d.setProductName(product.getName());
@@ -402,6 +406,9 @@ public class DeliveryController {
 			}
 			if (StringUtils.isNotBlank(delivery.getReportDate())) {
 				d.setReportDate(DateUtils.convertToDateTime(delivery.getReportDate()));
+			}
+			if (null != delivery.getProduceAddress()) {
+				d.setProduceAddress(delivery.getProduceAddress());
 			}
 			if (null != delivery.getColumnId()) {
 				StandardTitleEntity columnTitle = standardTitleService.findOne(delivery.getColumnId());

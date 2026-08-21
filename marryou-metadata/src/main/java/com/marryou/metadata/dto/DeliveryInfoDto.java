@@ -29,6 +29,10 @@ public class DeliveryInfoDto{
      */
     private Date reportDate;
     /**
+     * 生产厂地址
+     */
+    private String produceAddress;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -197,6 +201,14 @@ public class DeliveryInfoDto{
 
     public void setReportDate(Date reportDate) {
         this.reportDate = reportDate;
+    }
+
+    public String getProduceAddress() {
+        return produceAddress;
+    }
+
+    public void setProduceAddress(String produceAddress) {
+        this.produceAddress = produceAddress;
     }
 
     public Long getSupplierId() {

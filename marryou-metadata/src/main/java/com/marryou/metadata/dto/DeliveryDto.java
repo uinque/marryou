@@ -32,6 +32,10 @@ public class DeliveryDto implements Serializable {
      */
     private String reportDate;
     /**
+     * 生产厂地址
+     */
+    private String produceAddress;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -186,6 +190,14 @@ public class DeliveryDto implements Serializable {
 
     public void setReportDate(String reportDate) {
         this.reportDate = reportDate;
+    }
+
+    public String getProduceAddress() {
+        return produceAddress;
+    }
+
+    public void setProduceAddress(String produceAddress) {
+        this.produceAddress = produceAddress;
     }
 
     public Long getSupplierId() {
@@ -420,6 +432,7 @@ public class DeliveryDto implements Serializable {
                 ", deliveryTime='" + deliveryTime + '\'' +
                 ", outTime='" + outTime + '\'' +
                 ", reportDate='" + reportDate + '\'' +
+                ", produceAddress='" + produceAddress + '\'' +
                 ", supplierId=" + supplierId +
                 ", supplierName='" + supplierName + '\'' +
                 ", distributorId=" + distributorId +
