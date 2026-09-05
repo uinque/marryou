@@ -397,7 +397,7 @@ public class DeliveryController {
 			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
 				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),d.getTenantCode()),"非本租户下的出库单，无权操作");
 			}
-			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "reportDate", "produceAddress", "level", "status", "qrcodeUrl",
+			BUtils.copyPropertiesIgnoreNull(delivery, d, "id","deliveryNo","deliveryTime", "reportDate", "produceAddress", "level", "status", "qrcodeUrl",
 					"standards");
 			d.setDistributorName(company.getName());
 			d.setProductName(product.getName());
