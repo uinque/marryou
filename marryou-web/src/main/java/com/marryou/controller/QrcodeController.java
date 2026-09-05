@@ -11,6 +11,7 @@ import com.marryou.metadata.entity.DeliveryOrderEntity;
 import com.marryou.metadata.entity.DeliveryStandardEntity;
 import com.marryou.metadata.service.DeliveryService;
 import com.marryou.metadata.service.QrCodeService;
+import com.marryou.metadata.utils.DeliveryFeatureUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ public class QrcodeController {
 			Preconditions.checkNotNull(delivery, "查无对应出库单数据");
 			DeliveryInfoDto info = new DeliveryInfoDto();
 			BeanUtils.copyProperties(delivery,info,"standards");
+			DeliveryFeatureUtils.applyToInfoDto(delivery.getFeature(), info);
 			List<DeliveryStandardEntity> list = delivery.getStandards();
 			Preconditions.checkState(Collections3.isNotEmpty(list),"查无对应出库单检验结果");
 			List<StandardValDto> params = list.stream().map(s->{

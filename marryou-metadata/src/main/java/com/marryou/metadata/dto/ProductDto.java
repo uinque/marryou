@@ -33,6 +33,18 @@ public class ProductDto implements Serializable {
      */
     private String printName;
     /**
+     * 报告样式编号
+     */
+    private String styleNum;
+    /**
+     * 报告样式左标题
+     */
+    private String styleTitleLeft;
+    /**
+     * 报告样式右标题
+     */
+    private String styleTitleRight;
+    /**
      * 打印备注
      */
     private String remark;
@@ -127,6 +139,30 @@ public class ProductDto implements Serializable {
 
     public void setPrintName(String printName) {
         this.printName = printName;
+    }
+
+    public String getStyleNum() {
+        return styleNum;
+    }
+
+    public void setStyleNum(String styleNum) {
+        this.styleNum = styleNum;
+    }
+
+    public String getStyleTitleLeft() {
+        return styleTitleLeft;
+    }
+
+    public void setStyleTitleLeft(String styleTitleLeft) {
+        this.styleTitleLeft = styleTitleLeft;
+    }
+
+    public String getStyleTitleRight() {
+        return styleTitleRight;
+    }
+
+    public void setStyleTitleRight(String styleTitleRight) {
+        this.styleTitleRight = styleTitleRight;
     }
 
     public String getRemark() {
@@ -280,6 +316,9 @@ public class ProductDto implements Serializable {
                 ", name='" + name + '\'' +
                 ", type=" + type +
                 ", printName='" + printName + '\'' +
+                ", styleNum='" + styleNum + '\'' +
+                ", styleTitleLeft='" + styleTitleLeft + '\'' +
+                ", styleTitleRight='" + styleTitleRight + '\'' +
                 ", remark='" + remark + '\'' +
                 ", status=" + status +
                 ", standardDataFlag=" + standardDataFlag +

@@ -36,6 +36,42 @@ public class DeliveryDto implements Serializable {
      */
     private String produceAddress;
     /**
+     * 封签编号
+     */
+    private String sealNo;
+    /**
+     * 月份批次
+     */
+    private String monthlyBatch;
+    /**
+     * 单据联系电话
+     */
+    private String orderPhone;
+    /**
+     * 数量
+     */
+    private String unitNum;
+    /**
+     * 报告样式编号
+     */
+    private String styleNum;
+    /**
+     * 报告样式左标题
+     */
+    private String styleTitleLeft;
+    /**
+     * 报告样式右标题
+     */
+    private String styleTitleRight;
+    /**
+     * 执行标准
+     */
+    private String styleImpleStandard;
+    /**
+     * 生产批号
+     */
+    private String productBatch;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -198,6 +234,78 @@ public class DeliveryDto implements Serializable {
 
     public void setProduceAddress(String produceAddress) {
         this.produceAddress = produceAddress;
+    }
+
+    public String getSealNo() {
+        return sealNo;
+    }
+
+    public void setSealNo(String sealNo) {
+        this.sealNo = sealNo;
+    }
+
+    public String getMonthlyBatch() {
+        return monthlyBatch;
+    }
+
+    public void setMonthlyBatch(String monthlyBatch) {
+        this.monthlyBatch = monthlyBatch;
+    }
+
+    public String getOrderPhone() {
+        return orderPhone;
+    }
+
+    public void setOrderPhone(String orderPhone) {
+        this.orderPhone = orderPhone;
+    }
+
+    public String getUnitNum() {
+        return unitNum;
+    }
+
+    public void setUnitNum(String unitNum) {
+        this.unitNum = unitNum;
+    }
+
+    public String getStyleNum() {
+        return styleNum;
+    }
+
+    public void setStyleNum(String styleNum) {
+        this.styleNum = styleNum;
+    }
+
+    public String getStyleTitleLeft() {
+        return styleTitleLeft;
+    }
+
+    public void setStyleTitleLeft(String styleTitleLeft) {
+        this.styleTitleLeft = styleTitleLeft;
+    }
+
+    public String getStyleTitleRight() {
+        return styleTitleRight;
+    }
+
+    public void setStyleTitleRight(String styleTitleRight) {
+        this.styleTitleRight = styleTitleRight;
+    }
+
+    public String getStyleImpleStandard() {
+        return styleImpleStandard;
+    }
+
+    public void setStyleImpleStandard(String styleImpleStandard) {
+        this.styleImpleStandard = styleImpleStandard;
+    }
+
+    public String getProductBatch() {
+        return productBatch;
+    }
+
+    public void setProductBatch(String productBatch) {
+        this.productBatch = productBatch;
     }
 
     public Long getSupplierId() {
@@ -433,6 +541,15 @@ public class DeliveryDto implements Serializable {
                 ", outTime='" + outTime + '\'' +
                 ", reportDate='" + reportDate + '\'' +
                 ", produceAddress='" + produceAddress + '\'' +
+                ", sealNo='" + sealNo + '\'' +
+                ", monthlyBatch='" + monthlyBatch + '\'' +
+                ", orderPhone='" + orderPhone + '\'' +
+                ", unitNum='" + unitNum + '\'' +
+                ", styleNum='" + styleNum + '\'' +
+                ", styleTitleLeft='" + styleTitleLeft + '\'' +
+                ", styleTitleRight='" + styleTitleRight + '\'' +
+                ", styleImpleStandard='" + styleImpleStandard + '\'' +
+                ", productBatch='" + productBatch + '\'' +
                 ", supplierId=" + supplierId +
                 ", supplierName='" + supplierName + '\'' +
                 ", distributorId=" + distributorId +

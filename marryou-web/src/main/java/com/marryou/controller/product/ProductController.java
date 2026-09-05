@@ -22,6 +22,7 @@ import com.marryou.metadata.service.ProductService;
 import com.marryou.metadata.service.StandardParamsService;
 import com.marryou.metadata.service.TenantService;
 import com.marryou.metadata.service.UserService;
+import com.marryou.metadata.utils.ProductFeatureUtils;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
@@ -85,6 +86,7 @@ public class ProductController {
 			p.setHeadResult(product.getHeadResult());
 			p.setFootName(product.getFootName());
 			p.setFootContent(product.getFootContent());
+			p.setFeature(ProductFeatureUtils.build(product));
 			p.setTenantCode(operator.getTenantCode());
 			p.setCreateBy(loginName);
 			p.setCreateTime(new Date());
@@ -117,6 +119,7 @@ public class ProductController {
 			}
 			p.setStatus(StatusEnum.getEnum(product.getStatus()));
 			p.setType(ProductTypeEnum.getEnum(product.getType()));
+			p.setFeature(ProductFeatureUtils.build(product));
 			p.setModifyBy(loginName);
 			p.setModifyTime(new Date());
 			productService.updateProduct(p, "更新产品:" + p.getName(), OperateTypeEnum.UPDATE, loginName);
@@ -170,6 +173,7 @@ public class ProductController {
 			BUtils.copyPropertiesIgnoreNull(p, product);
 			product.setType(p.getType().getValue());
 			product.setStatus(p.getStatus().getValue());
+			ProductFeatureUtils.apply(p.getFeature(), product);
 			TenantEntity tenant = tenantService.findByTenantCode(p.getTenantCode());
 			if(null!=tenant){
 				product.setAllowModifyOutTime(tenant.getModifyOutTimeFlag());
@@ -203,6 +207,7 @@ public class ProductController {
 				BUtils.copyPropertiesIgnoreNull(p, product);
 				product.setType(p.getType().getValue());
 				product.setStatus(p.getStatus().getValue());
+				ProductFeatureUtils.apply(p.getFeature(), product);
 				List<StandardParamsEntity> datas = standardParamsService.findByProductId(p.getId());
 				if(Collections3.isNotEmpty(datas)){
 					product.setStandardDataFlag(ProductDto.BEEN_DATA);

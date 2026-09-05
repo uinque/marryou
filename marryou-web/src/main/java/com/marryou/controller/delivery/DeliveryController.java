@@ -41,6 +41,7 @@ import com.marryou.metadata.service.StandardParamsService;
 import com.marryou.metadata.service.StandardService;
 import com.marryou.metadata.service.StandardTitleService;
 import com.marryou.metadata.service.TenantService;
+import com.marryou.metadata.utils.DeliveryFeatureUtils;
 import com.marryou.utils.Constants;
 import com.marryou.utils.JwtUtils;
 import com.marryou.utils.RoleUtils;
@@ -143,6 +144,7 @@ public class DeliveryController {
 			if (StringUtils.isNotBlank(delivery.getProduceAddress())) {
 				d.setProduceAddress(delivery.getProduceAddress());
 			}
+			d.setFeature(DeliveryFeatureUtils.buildOnCreate(delivery, product.getFeature()));
 			d.setTechno(TechnoEnum.getEnum(delivery.getTechno()));
 			d.setRemark(product.getRemark());
 			d.setStatus(StatusEnum.EFFECTIVE);
@@ -227,6 +229,7 @@ public class DeliveryController {
 			Preconditions.checkNotNull(delivery, "查无对应出库单数据");
 			DeliveryInfoDto info = new DeliveryInfoDto();
 			BeanUtils.copyProperties(delivery, info, "standards");
+			DeliveryFeatureUtils.applyToInfoDto(delivery.getFeature(), info);
 			info.setStatus(delivery.getStatus().getValue());
 			info.setTechno(delivery.getTechno().getValue());
 			ProductEntity product = productService.findOne(delivery.getProductId());
@@ -351,6 +354,7 @@ public class DeliveryController {
 				rows = page.getContent().stream().map(d -> {
 					DeliveryInfoDto deliveryInfoDto = new DeliveryInfoDto();
 					BUtils.copyPropertiesIgnoreNull(d, deliveryInfoDto, "standards");
+					DeliveryFeatureUtils.applyToInfoDto(d.getFeature(), deliveryInfoDto);
 					deliveryInfoDto.setStatus(d.getStatus().getValue());
 					deliveryInfoDto.setTechno(d.getTechno().getValue());
 					return deliveryInfoDto;
@@ -410,6 +414,7 @@ public class DeliveryController {
 			if (null != delivery.getProduceAddress()) {
 				d.setProduceAddress(delivery.getProduceAddress());
 			}
+			d.setFeature(DeliveryFeatureUtils.updateBusinessFields(d.getFeature(), delivery));
 			if (null != delivery.getColumnId()) {
 				StandardTitleEntity columnTitle = standardTitleService.findOne(delivery.getColumnId());
 				if(null!=columnTitle){

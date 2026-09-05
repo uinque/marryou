@@ -65,6 +65,11 @@ public class ProductEntity extends BaseEntity {
      */
     private String footContent;
 
+    /**
+     * 扩展配置
+     */
+    private String feature;
+
     public ProductEntity() {
     }
 
@@ -167,6 +172,15 @@ public class ProductEntity extends BaseEntity {
         this.footContent = footContent;
     }
 
+    @Column(name = "feature", columnDefinition = "TEXT")
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
+    }
+
     @Override
     public String toString() {
         return "ProductEntity{" +
@@ -180,6 +194,7 @@ public class ProductEntity extends BaseEntity {
                 ", headResult='" + headResult + '\'' +
                 ", footName='" + footName + '\'' +
                 ", footContent='" + footContent + '\'' +
+                ", feature='" + feature + '\'' +
                 "} " + super.toString();
     }
 }

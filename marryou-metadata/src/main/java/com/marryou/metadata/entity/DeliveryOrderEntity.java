@@ -56,6 +56,10 @@ public class DeliveryOrderEntity extends BaseEntity {
      */
     private String produceAddress;
     /**
+     * 扩展配置
+     */
+    private String feature;
+    /**
      * 供应商Id
      */
     private Long supplierId;
@@ -220,6 +224,15 @@ public class DeliveryOrderEntity extends BaseEntity {
 
     public void setProduceAddress(String produceAddress) {
         this.produceAddress = produceAddress;
+    }
+
+    @Column(name = "feature", columnDefinition = "TEXT")
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
     }
 
     @Column(name = "supplier_id")
@@ -474,6 +487,7 @@ public class DeliveryOrderEntity extends BaseEntity {
                 ", outTime=" + outTime +
                 ", reportDate=" + reportDate +
                 ", produceAddress='" + produceAddress + '\'' +
+                ", feature='" + feature + '\'' +
                 ", supplierId=" + supplierId +
                 ", supplierName='" + supplierName + '\'' +
                 ", distributorId=" + distributorId +
