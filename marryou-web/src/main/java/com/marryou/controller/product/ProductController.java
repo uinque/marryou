@@ -78,7 +78,7 @@ public class ProductController {
 			Preconditions.checkNotNull(product, "productDto为null");
 			Preconditions.checkState(StringUtils.isNotBlank(product.getName()), "productName为null");
 			ProductEntity p = new ProductEntity();
-			BUtils.copyPropertiesIgnoreNull(product, p);
+			BUtils.copyPropertiesIgnoreNull(product, p, "feature");
 			p.setStatus(StatusEnum.getEnum(product.getStatus()));
 			p.setType(ProductTypeEnum.getEnum(product.getType()));
 			p.setHeadName(product.getHeadName());
@@ -113,7 +113,7 @@ public class ProductController {
 			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
 				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),p.getTenantCode()),"非本租户下的产品，无权操作");
 			}
-			BUtils.copyPropertiesIgnoreNull(product, p, "standards");
+			BUtils.copyPropertiesIgnoreNull(product, p, "standards", "feature");
 			if(StringUtils.isBlank(product.getRemark())){
 				p.setRemark(null);
 			}

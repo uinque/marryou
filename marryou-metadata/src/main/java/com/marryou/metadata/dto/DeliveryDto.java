@@ -3,6 +3,7 @@ package com.marryou.metadata.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by linhy on 2018/6/3.
@@ -35,6 +36,10 @@ public class DeliveryDto implements Serializable {
      * 生产厂地址
      */
     private String produceAddress;
+    /**
+     * 扩展配置
+     */
+    private Map<String, Object> feature;
     /**
      * 封签编号
      */
@@ -234,6 +239,14 @@ public class DeliveryDto implements Serializable {
 
     public void setProduceAddress(String produceAddress) {
         this.produceAddress = produceAddress;
+    }
+
+    public Map<String, Object> getFeature() {
+        return feature;
+    }
+
+    public void setFeature(Map<String, Object> feature) {
+        this.feature = feature;
     }
 
     public String getSealNo() {
@@ -541,6 +554,7 @@ public class DeliveryDto implements Serializable {
                 ", outTime='" + outTime + '\'' +
                 ", reportDate='" + reportDate + '\'' +
                 ", produceAddress='" + produceAddress + '\'' +
+                ", feature=" + feature +
                 ", sealNo='" + sealNo + '\'' +
                 ", monthlyBatch='" + monthlyBatch + '\'' +
                 ", orderPhone='" + orderPhone + '\'' +

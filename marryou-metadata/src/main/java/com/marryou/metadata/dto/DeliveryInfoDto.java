@@ -5,6 +5,7 @@ import com.marryou.metadata.entity.TenantEntity;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by linhy on 2018/6/26.
@@ -32,6 +33,10 @@ public class DeliveryInfoDto{
      * 生产厂地址
      */
     private String produceAddress;
+    /**
+     * 扩展配置
+     */
+    private Map<String, Object> feature;
     /**
      * 封签编号
      */
@@ -245,6 +250,14 @@ public class DeliveryInfoDto{
 
     public void setProduceAddress(String produceAddress) {
         this.produceAddress = produceAddress;
+    }
+
+    public Map<String, Object> getFeature() {
+        return feature;
+    }
+
+    public void setFeature(Map<String, Object> feature) {
+        this.feature = feature;
     }
 
     public String getSealNo() {

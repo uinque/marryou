@@ -15,15 +15,21 @@ public final class ProductFeatureUtils {
     }
 
     public static String build(ProductDto product) {
-        Map<String, Object> feature = new LinkedHashMap<>();
-        putIfNotBlank(feature, FeatureUtils.STYLE_NUM, product.getStyleNum());
-        putIfNotBlank(feature, FeatureUtils.STYLE_TITLE_LEFT, product.getStyleTitleLeft());
-        putIfNotBlank(feature, FeatureUtils.STYLE_TITLE_RIGHT, product.getStyleTitleRight());
+        Map<String, Object> feature;
+        if (product.getFeature() == null) {
+            feature = new LinkedHashMap<>();
+            putIfNotBlank(feature, FeatureUtils.STYLE_NUM, product.getStyleNum());
+            putIfNotBlank(feature, FeatureUtils.STYLE_TITLE_LEFT, product.getStyleTitleLeft());
+            putIfNotBlank(feature, FeatureUtils.STYLE_TITLE_RIGHT, product.getStyleTitleRight());
+        } else {
+            feature = new LinkedHashMap<>(product.getFeature());
+        }
         return FeatureUtils.serialize(feature);
     }
 
     public static void apply(String rawFeature, ProductDto product) {
         Map<String, Object> feature = FeatureUtils.parse(rawFeature);
+        product.setFeature(feature);
         product.setStyleNum(FeatureUtils.getString(feature, FeatureUtils.STYLE_NUM));
         product.setStyleTitleLeft(FeatureUtils.getString(feature, FeatureUtils.STYLE_TITLE_LEFT));
         product.setStyleTitleRight(FeatureUtils.getString(feature, FeatureUtils.STYLE_TITLE_RIGHT));

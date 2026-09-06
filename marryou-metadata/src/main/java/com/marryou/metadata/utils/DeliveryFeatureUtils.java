@@ -16,7 +16,7 @@ public final class DeliveryFeatureUtils {
     }
 
     public static String buildOnCreate(DeliveryDto delivery, String productFeature) {
-        Map<String, Object> feature = new LinkedHashMap<>();
+        Map<String, Object> feature = new LinkedHashMap<>(FeatureUtils.parse(productFeature));
         putIfNotBlank(feature, FeatureUtils.SEAL_NO, delivery.getSealNo());
         putIfNotBlank(feature, FeatureUtils.MONTHLY_BATCH, delivery.getMonthlyBatch());
         putIfNotBlank(feature, FeatureUtils.ORDER_PHONE, delivery.getOrderPhone());
@@ -24,10 +24,10 @@ public final class DeliveryFeatureUtils {
         putIfNotBlank(feature, FeatureUtils.STYLE_IMPLE_STANDARD, delivery.getStyleImpleStandard());
         putIfNotBlank(feature, FeatureUtils.PRODUCT_BATCH, delivery.getProductBatch());
 
-        Map<String, Object> product = FeatureUtils.parse(productFeature);
-        copyIfPresent(product, feature, FeatureUtils.STYLE_NUM);
-        copyIfPresent(product, feature, FeatureUtils.STYLE_TITLE_LEFT);
-        copyIfPresent(product, feature, FeatureUtils.STYLE_TITLE_RIGHT);
+//        Map<String, Object> product = FeatureUtils.parse(productFeature);
+//        copyIfPresent(product, feature, FeatureUtils.STYLE_NUM);
+//        copyIfPresent(product, feature, FeatureUtils.STYLE_TITLE_LEFT);
+//        copyIfPresent(product, feature, FeatureUtils.STYLE_TITLE_RIGHT);
         return FeatureUtils.serialize(feature);
     }
 
@@ -44,6 +44,7 @@ public final class DeliveryFeatureUtils {
 
     public static void applyToInfoDto(String rawFeature, DeliveryInfoDto delivery) {
         Map<String, Object> feature = FeatureUtils.parse(rawFeature);
+        delivery.setFeature(feature);
         delivery.setSealNo(FeatureUtils.getString(feature, FeatureUtils.SEAL_NO));
         delivery.setMonthlyBatch(FeatureUtils.getString(feature, FeatureUtils.MONTHLY_BATCH));
         delivery.setOrderPhone(FeatureUtils.getString(feature, FeatureUtils.ORDER_PHONE));

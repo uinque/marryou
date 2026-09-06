@@ -133,7 +133,7 @@ public class DeliveryController {
 			StandardTitleEntity columnTitle = standardTitleService.findOne(delivery.getColumnId());
 			Preconditions.checkNotNull(columnTitle, "查无对应模板标准列标题数据");
 			DeliveryOrderEntity d = new DeliveryOrderEntity();
-			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "reportDate", "produceAddress", "status",
+			BUtils.copyPropertiesIgnoreNull(delivery, d, "id", "deliveryTime", "reportDate", "produceAddress", "feature", "status",
 					"standards");
 			d.setDeliveryNo(DateUtils.formatDate(new Date(), "yyHHMMmmddss")+ RandomUtils.getRandom(2));
 			d.setDeliveryTime(DateUtils.convertToDateTime(delivery.getDeliveryTime()));
@@ -397,7 +397,7 @@ public class DeliveryController {
 			if(!RoleUtils.isPlatformAdmin(operator.getTenantCode())){
 				Preconditions.checkState(StringUtils.equals(operator.getTenantCode(),d.getTenantCode()),"非本租户下的出库单，无权操作");
 			}
-			BUtils.copyPropertiesIgnoreNull(delivery, d, "id","deliveryNo","deliveryTime", "reportDate", "produceAddress", "level", "status", "qrcodeUrl",
+			BUtils.copyPropertiesIgnoreNull(delivery, d, "id","deliveryNo","deliveryTime", "reportDate", "produceAddress", "feature", "level", "status", "qrcodeUrl",
 					"standards");
 			d.setDistributorName(company.getName());
 			d.setProductName(product.getName());

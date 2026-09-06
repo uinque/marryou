@@ -5,6 +5,7 @@ import com.marryou.metadata.entity.TenantEntity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by linhy on 2018/6/3.
@@ -32,6 +33,10 @@ public class ProductDto implements Serializable {
      * 打印抬头
      */
     private String printName;
+    /**
+     * 扩展配置
+     */
+    private Map<String, Object> feature;
     /**
      * 报告样式编号
      */
@@ -139,6 +144,14 @@ public class ProductDto implements Serializable {
 
     public void setPrintName(String printName) {
         this.printName = printName;
+    }
+
+    public Map<String, Object> getFeature() {
+        return feature;
+    }
+
+    public void setFeature(Map<String, Object> feature) {
+        this.feature = feature;
     }
 
     public String getStyleNum() {
@@ -316,6 +329,7 @@ public class ProductDto implements Serializable {
                 ", name='" + name + '\'' +
                 ", type=" + type +
                 ", printName='" + printName + '\'' +
+                ", feature=" + feature +
                 ", styleNum='" + styleNum + '\'' +
                 ", styleTitleLeft='" + styleTitleLeft + '\'' +
                 ", styleTitleRight='" + styleTitleRight + '\'' +
